@@ -34,46 +34,6 @@
         <?php
             session_start();
         ?>
-        <nav >
-            <ul class="layout_nav">
-                @auth
-                <li class="">
-                    <a href="/" class="items"
-                        ><i class="fa-solid fa-gear"></i> Manage account</a>
-                        <?php
-                        $_SESSION['user_id'] = auth()->id();
-                        ?>
-                </li>
-                {{-- <li class='flex space-x-6'>
-                    <span class="welcome">  
-                        Welcome {{auth()->user()->name}}
-                        
-                    </span>
-                </li> --}}
-                <li>
-                    <form action="/logout" method="POST" class="inline">
-                        @csrf
-                        <button class="logout" type="submit">
-                            <i class="fa-solid fa-door-closed"></i>Logout
-                        </button>
-                    </form>    
-                </li>
-                @else
-                <?php
-                     $_SESSION['user_id'] = null;
-                ?>
-                <li>
-                    <a href="/register" class="items"
-                        ><i class="fa-solid fa-user-plus"></i> Register</a>
-                </li>
-                <li>
-                    <a href="/login" class="items"
-                        ><i class="fa-solid fa-arrow-right-to-bracket"></i>
-                        Login</a>
-                </li>
-                @endauth
-            </ul>
-        </nav>
         {{-- <div id="example"></div> --}}
         <main>
             {{$slot}}

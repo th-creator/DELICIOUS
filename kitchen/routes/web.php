@@ -19,22 +19,22 @@ Route::get('/', function () {
     return view('home');
 });
 //show register /create form
-Route::get('/register',[UserController::class , 'create']);
-// ->middleware('guest');
+// Route::get('/register',[UserController::class , 'create']);
+// // ->middleware('guest');
 
-//create a new user
-Route::post('/users', [UserController::class, 'store']);
+// //create a new user
+// Route::post('/users', [UserController::class, 'store']);
 
-//log user out
-Route::post('/logout', [UserController::class, 'logout'])
-->middleware('auth');
+// //log user out
+// Route::post('/logout', [UserController::class, 'logout'])
+// ->middleware('auth');
 
-//show login form
-Route::get('/login',[UserController::class, 'login'])
-->name('login')->middleware('guest');
+// //show login form
+// Route::get('/login',[UserController::class, 'login'])
+// ->name('login')->middleware('guest');
 
-//log in user
-Route::post('/users/authenticate',[UserController::class, 'authenticate']);
+// //log in user
+// Route::post('/users/authenticate',[UserController::class, 'authenticate']);
 Route::get('{reactRoutes}', function () {
     return view('home');
 })->where('reactRoutes', '^((?!api).)*$');

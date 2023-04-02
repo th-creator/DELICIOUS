@@ -8,6 +8,8 @@ import {Route, Routes, useLocation} from 'react-router-dom'
 // import { AnimatePresence } from 'framer-motion'
 import Favorite from '../components/Favorite'
 import Restaurant from './restaurant'
+import Login from './Login'
+import Register from './register'
 
 function Pages({toggle, switcher}) {
   const home = switcher ?  <Restaurant /> : <Home toggle={toggle} />
@@ -18,6 +20,8 @@ function Pages({toggle, switcher}) {
       <Routes location={location} key={location.pathname}>
         <Route path='/' element={home} />
         <Route path='/home' element={home} />
+        <Route path='/Login' element={<Login/>} />
+        <Route path='/Register' element={<Register/>} />
         {!switcher &&
           <>
             <Route path='/Favorite' element={<Favorite toggle={toggle} />} />

@@ -43,3 +43,11 @@ a {
     margin: 0 2%;
   }
 }
+@media (max-width: 1024px) {
+  .headerH {
+    display: none;
+  }
+  .logo-container {
+    width: 5px;
+  }
+}

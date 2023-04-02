@@ -1,8 +1,7 @@
 import Pages from './pages/Pages';
-import {BrowserRouter} from 'react-router-dom'
 import { useState, useMemo, useEffect } from 'react';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { GiKnifeFork, GiShop } from 'react-icons/gi';
 import { BiFoodMenu } from 'react-icons/bi';
 import { FaHeart } from 'react-icons/fa';
@@ -11,10 +10,15 @@ import Category from './components/Category';
 import Search from './components/search';
 import './index.css';
 import axios from 'axios';
+import {useSelector, useDispatch} from "react-redux"
+import { logout, initFavorite } from './actions'
 
 function App() {
   const [favs, setFavs] = useState([])
   const providerValue = useMemo(() => ({favs, setFavs}),[favs,setFavs])
+	const navigate = useNavigate()
+  const auth = useSelector(state => state.userReducer)
+  const dispatch = useDispatch()
   
   useEffect(()=> {
     setFavs([])
@@ -52,60 +56,93 @@ function App() {
       console.log(res)  
     }).catch(err => console.log(err))
  }
-  console.log(favs)
+ const signout = () => {
+  axios.post("http://127.0.0.1:8000/api/logout",[],{
+    headers: {
+      Authorization : `Bearer ${localStorage.getItem("access_token")}`
+      }
+  })
+    .then((res) => {
+      console.log("here we go again");
+      console.log(res);
+    })
+    .catch(err => {
+      console.error(err);
+    })
+  dispatch(initFavorite([]))
+  localStorage.removeItem("access_token")
+  // localStorage.removeItem("role")
+  dispatch(logout()) 
+  navigate('/')
+}
   
   const [switcher, setSwitcher] = useState(true) ;
 
+  const switchPage = () => {
+    setSwitcher(!switcher)
+    navigate(`/Home`);
+  }
+
   return (
     <div className="App">
-      <BrowserRouter>
-        {/* <NavLog>
+        <NavLog>
         <ul className="layout_nav">
-                <li className="">
-                    <a href="/" className="items"
-                        ><i className="fa-solid fa-gear"></i> Manage account</a>
+                {auth ? <>
+                  <li className="">
+                    <Link to="/" className="items"
+                        ><i className="fa-solid fa-gear"></i> Manage account</Link>
                 </li>
                 <li>
-                    <form className="inline">
+                  <button onClick={signout} className='logout'><i className="fa-solid fa-door-closed"></i>Logout</button>
+                    {/* <form className="inline">
                         <button className="logout" type="submit">
                             <i className="fa-solid fa-door-closed"></i>Logout
-                        </button>
-                    </form>    
+                            </button>
+                          </form>     */}
+                </li></>
+                : <>
+                <li>
+                    <Link to="/register" className="items"
+                        ><i className="fa-solid fa-user-plus"></i> Register</Link>
                 </li>
                 <li>
-                    <a href="/register" className="items"
-                        ><i className="fa-solid fa-user-plus"></i> Register</a>
-                </li>
-                <li>
-                    <a href="/login" className="items"
+                    <Link to="/login" className="items"
                         ><i className="fa-solid fa-arrow-right-to-bracket"></i>
-                        Login</a>
+                        Login</Link>
                 </li>
+                </>}
             </ul>
-        </NavLog> */}
+        </NavLog>
           <Nav>
-            <div>
+            <div className='logo-container'>
               <GiKnifeFork />
               <Logo className='headerH' to={"/"}>Delicious</Logo>
             </div>
-            <Main onClick={() => setSwitcher(!switcher)}>
+            <Main onClick={switchPage}>
               {switcher ? <BiFoodMenu /> : <GiShop />} 
             </Main>
-            <div style={{width:"205px"}}>
+            <div className='logo-container'>
               <FaHeart />
               {switcher ? <Logo className='headerH' to={"/Favorite"}> Reservation</Logo> : 
               <Logo className='headerH' to={"/Favorite"}> Favourites</Logo>}
             </div>
           </Nav>
-          {!switcher && <>
+          {!switcher ? <>
             <Search />
             <Category />
-          </>}
+          </>
+          : 
+          <SecNav >
+            <ul>
+              <li>Menu</li>  
+              <li>Order Online</li>
+              <li>Cart</li>  
+            </ul>
+          </SecNav>}
           <favContext.Provider value={providerValue}>
             <Pages switcher={switcher} toggle={onToggle}/>
           </favContext.Provider>
         
-      </BrowserRouter>
       
     </div>
   );
@@ -119,7 +156,7 @@ const Logo = styled(Link)`
   margin-inline: 2px;
 `
 const Nav = styled.div`
-  padding: 2rem 4rem 4rem;
+  padding: 2rem 4rem 0;
   display: flex;
   justify-content: flex-start;
   align-items: center;
@@ -129,6 +166,27 @@ const Nav = styled.div`
   }
   .inline{
     display: inline;
+  }
+  .logo-container {
+    width: 205px ;
+  }
+`
+const SecNav = styled.div`
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  
+  ul {
+    display: flex;
+    list-style: none;
+  }
+  li {
+    margin-inline: 10px;
+    color: black;
+    text-decoration: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    border-bottom: 1px solid black;
   }
 `
 const Main = styled.div`
