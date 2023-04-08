@@ -48,8 +48,7 @@ class UserController extends Controller
     //getting the authed user's info
     public function getUser(Request $request) {
         $user = User::where("id",auth()->id())->with('roles')->get();
-        // Session::put('roles', $request->user()->roles[0]->name);
-        // $roles = Session::get('roles');
+        
         return response()->json($user,200);
     }
     //changing user name

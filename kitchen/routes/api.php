@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RecipesController;
+use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\UserController;
 
 /*
@@ -29,7 +30,7 @@ Route::delete('/recipes/{id}',[RecipesController::class,'destroy']);
 
 Route::post('/register', [UserController::class, 'store']);
 
-Route::middleware('auth:sanctum')->get('/logout', [UserController::class, "logout"]);
+Route::middleware('auth:sanctum')->post('/logout', [UserController::class, "logout"]);
 
 // to login a user
 Route::post('/authenticate',[UserController::class, 'authenticate'])->middleware('guest')->name('login');
@@ -41,3 +42,4 @@ Route::middleware('auth:sanctum')->get('/user', [UserController::class, "getUser
 //     return $request->user();
 // });
  
+Route::apiResource("/Reservation", ReservationController::class);

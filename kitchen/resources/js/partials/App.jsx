@@ -11,7 +11,7 @@ import Search from './components/search';
 import './index.css';
 import axios from 'axios';
 import {useSelector, useDispatch} from "react-redux"
-import { logout, initFavorite } from './actions'
+import { logout, isAuth, login } from './actions'
 
 function App() {
   const [favs, setFavs] = useState([])
@@ -21,8 +21,28 @@ function App() {
   const dispatch = useDispatch()
   
   useEffect(()=> {
+    dispatch(isAuth())
+    if(localStorage.getItem('access_token')) {
+      axios.get("http://127.0.0.1:8000/api/user",{
+        headers: {
+          Authorization : `Bearer ${localStorage.getItem("access_token")}`
+          }
+      })
+        .then((res) => {
+          console.log(res);
+          dispatch(login({name:res.data[0].name,email:res.data[0].email,role:res.data[0].roles,id:res.data[0].id}))
+        })
+        .catch((err) => {
+          console.log(err)
+        })  
+    }
+    // auth = useSelector(state => state.userReducer)
     setFavs([])
-    axios.get('/api/recipes')
+    axios.get('/api/recipes',{
+      headers: {
+        Authorization : `Bearer ${localStorage.getItem("access_token")}`
+        }
+    })
         .then(res => {
           var datas = []
           let info = res.data
@@ -42,9 +62,11 @@ function App() {
         if (favs[i] == id) {
           let data = favs.filter((item) => (item !== id))
           setFavs(data)
-          axios.delete(`/api/recipes/${id}`,
-           {recipe_id: newId}
-           )
+          axios.delete(`/api/recipes/${id}`,{
+            headers: {
+              Authorization : `Bearer ${localStorage.getItem("access_token")}`
+              }
+          }).then(res => console.log(res)).catch(err => console.log(err))
           return
         }
       }  
@@ -52,12 +74,16 @@ function App() {
     setFavs([...favs,newId])
     axios.post('/api/recipes/create',{
       meal_id: id
+    },{
+      headers: {
+        Authorization : `Bearer ${localStorage.getItem("access_token")}`
+        }
     }).then(res => {
       console.log(res)  
     }).catch(err => console.log(err))
  }
  const signout = () => {
-  axios.post("http://127.0.0.1:8000/api/logout",[],{
+  axios.post("http://127.0.0.1:8000/api/logout",{},{
     headers: {
       Authorization : `Bearer ${localStorage.getItem("access_token")}`
       }
@@ -69,19 +95,26 @@ function App() {
     .catch(err => {
       console.error(err);
     })
-  dispatch(initFavorite([]))
-  localStorage.removeItem("access_token")
+    localStorage.removeItem("access_token")
   // localStorage.removeItem("role")
   dispatch(logout()) 
   navigate('/')
 }
-  
-  const [switcher, setSwitcher] = useState(true) ;
 
-  const switchPage = () => {
-    setSwitcher(!switcher)
-    navigate(`/Home`);
+  const getPage = () => {
+    if (localStorage.getItem("switcher")) {
+      return false  
+    } else return true
   }
+
+  const [switcher, setSwitcher] = useState(true) ;
+  const switchPage = () => {
+    // if (localStorage.getItem("switcher")) {
+    //   localStorage.getItem("switcher") ? (localStorage.setItem("switcher") = 1 ) : (localStorage.setItem("switcher") = 0)
+    // }else  {localStorage.setItem("switcher") = 1} 
+    setSwitcher(!switcher)
+    navigate(`/Home`); 
+  } 
 
   return (
     <div className="App">

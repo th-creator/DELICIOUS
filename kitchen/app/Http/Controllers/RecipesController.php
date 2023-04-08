@@ -6,7 +6,7 @@ use App\Models\Recipes;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
-session_start();
+// session_start();
 
 class RecipesController extends Controller
 {
@@ -15,8 +15,8 @@ class RecipesController extends Controller
     {   
         try {
             
-            $id = $_SESSION['user_id'];
-            $recepes = Recipes::where('user_id',$id)->get();
+            // $id = $_SESSION['user_id'];
+            $recepes = Recipes::where('user_id',auth("sanctum")->id())->get();
             
             return response()->json($recepes);
         } catch (Exception $e) {
@@ -37,7 +37,7 @@ class RecipesController extends Controller
         try {
             $recepe_id = $request->get('recepe_id');
             $id = $request->get('id');
-            $user_id = auth()->id();
+            $user_id = auth("sanctum")->id();
             Recipes::find($id)->update([
                 'recipe_id'=> $recepe_id
             ]);
@@ -50,33 +50,26 @@ class RecipesController extends Controller
     }
     public function destroy($id)
     {
-        $user_id = $_SESSION['user_id'];
-        $recipe_id = $id;
-        try {
-            Recipes::where('recipe_id',$recipe_id)->where('user_id',$user_id)->delete();
-        } catch (Exception $e) {
-            Log::error($e);
-        }
+        // try {
+            $recipe = Recipes::where('recipe_id',$id)->where('user_id',auth("sanctum")->id())->delete();
+            return response()->json($recipe);
+        // } catch (Exception $e) {
+        //     Log::error($e);
+        // }
     }
     public function store(Request $request)
     {
-        try {
-            $mealId = $request->get('meal_id');
-            $id = $_SESSION['user_id'];
-            if($id == null) {
-                return ;
-            }
+            $mealId = $request->validate([
+                'meal_id' => "required"
+            ]);
             Recipes::create([
-                'user_id' => $id,
-                'recipe_id'=> $mealId,
+                'user_id' => auth("sanctum")->id(),
+                'recipe_id'=> $mealId['meal_id'],
             ]);
             return response()->json([
-                // 'user_id' => $id,
-                'recipe_id' => $mealId,
+                'user_id' => auth("sanctum")->id(),
+                'recipe_id' => $mealId['meal_id'],
             ]);
-        } catch (Exception $e) {
-            Log::error($e);
-        }
     }
 }
 

@@ -14,3 +14,12 @@ export const logout = () => {
     }
   )
 }
+
+export const isAuth = () => {
+  return (
+    {
+      type: 'ISAUTH'
+    }
+  )
+}
+

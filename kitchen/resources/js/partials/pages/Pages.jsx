@@ -10,6 +10,7 @@ import Favorite from '../components/Favorite'
 import Restaurant from './restaurant'
 import Login from './Login'
 import Register from './register'
+import ReservationForm from '../components/ReservationForm'
 
 function Pages({toggle, switcher}) {
   const home = switcher ?  <Restaurant /> : <Home toggle={toggle} />
@@ -22,12 +23,17 @@ function Pages({toggle, switcher}) {
         <Route path='/home' element={home} />
         <Route path='/Login' element={<Login/>} />
         <Route path='/Register' element={<Register/>} />
-        {!switcher &&
+        {!switcher ?
           <>
             <Route path='/Favorite' element={<Favorite toggle={toggle} />} />
             <Route path='/cuisine/:type' element={<Cuisine toggle={toggle} />} />
             <Route path='/searched/:search' element={<Searched toggle={toggle} />} />
             <Route path="/recipe/:name" element={<Recipe/>} />  
+          </>
+          :
+          <>
+          <Route path="/ReservationForm" element={<ReservationForm/>} />  
+
           </>
         }   
         <Route path='*' element={<Page404/>}  />

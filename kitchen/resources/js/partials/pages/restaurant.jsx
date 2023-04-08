@@ -1,6 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import FrontMenu from '../components/FrontMenu'
+import { Link } from 'react-router-dom'
 
 export default function Restaurant() {
 
@@ -11,7 +12,7 @@ export default function Restaurant() {
           <img width={"100%"} src="images/gfgm1.png" alt="good food good mode"/>
           <Para>Laughter is brightest in the place where <span>Food is Good</span></Para>
           <Center>
-            <Button>Book a Table</Button>
+            <Button to={"/ReservationForm"}>Book a Table</Button>
           </Center>
           
         </div>
@@ -49,7 +50,7 @@ const Para = styled.p`
   padding-left: 20px;
   margin-top:0;
 `
-const Button = styled.button`
+const Button = styled(Link)`
   padding: 1rem 2rem;
   color: #313131;
   background: white;
