@@ -11,6 +11,12 @@ class ReservationController extends Controller
         $reservations = Reservation::all();
         return response()->json(["reservations" => $reservations],200);
     }
+
+    public function getReservations($id) {
+        $reservations = Reservation::where("user_id",$id)->get();
+        return response()->json(["reservations" => $reservations],200);
+    }
+
     public function store(Request $request) {
         $reservation = $request->validate([
             'user_id' => "nullable",
@@ -20,8 +26,8 @@ class ReservationController extends Controller
             'num_person' => "required",
             'phone' => "required",
         ]);
-        // return response()->json($reservation);
-        $reservation["user_id"] = 1;
+        
+        $reservation["user_id"] = auth("sanctum")->id();
 
         Reservation::create($reservation);
 
@@ -51,5 +57,15 @@ class ReservationController extends Controller
         Reservation::destroy($id);
 
         return response()->json("reservation deleted",200);
+    }
+
+    public function setStateReservation(Request $request,$id) {
+        $reservation = $request->validate([
+            'state' => "required",
+        ]);
+
+        $reservation = Reservation::findOrFail($id)->update($reservation);
+
+        return response()->json("reservation state updated",200);
     }
 }

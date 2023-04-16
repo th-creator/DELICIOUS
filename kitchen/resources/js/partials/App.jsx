@@ -12,6 +12,7 @@ import './index.css';
 import axios from 'axios';
 import {useSelector, useDispatch} from "react-redux"
 import { logout, isAuth, login } from './actions'
+import AdminLayout from './components/AdminLayout';
 
 function App() {
   const [favs, setFavs] = useState([])
@@ -21,6 +22,7 @@ function App() {
   const dispatch = useDispatch()
   
   useEffect(()=> {
+    getPage()
     dispatch(isAuth())
     if(localStorage.getItem('access_token')) {
       axios.get("http://127.0.0.1:8000/api/user",{
@@ -96,22 +98,24 @@ function App() {
       console.error(err);
     })
     localStorage.removeItem("access_token")
-  // localStorage.removeItem("role")
+    localStorage.removeItem("role")
   dispatch(logout()) 
   navigate('/')
 }
 
   const getPage = () => {
     if (localStorage.getItem("switcher")) {
-      return false  
-    } else return true
+      let val = localStorage.getItem("switcher") == 1 ? true : false
+      setSwitcher(val) 
+    } else return setSwitcher(true)
   }
 
   const [switcher, setSwitcher] = useState(true) ;
   const switchPage = () => {
-    // if (localStorage.getItem("switcher")) {
-    //   localStorage.getItem("switcher") ? (localStorage.setItem("switcher") = 1 ) : (localStorage.setItem("switcher") = 0)
-    // }else  {localStorage.setItem("switcher") = 1} 
+    if (localStorage.getItem("switcher")) {
+      let val = localStorage.getItem("switcher") == 0 ? 1 :  0
+      localStorage.setItem("switcher",val)
+    }else  {localStorage.setItem("switcher",1)} 
     setSwitcher(!switcher)
     navigate(`/Home`); 
   } 
@@ -156,7 +160,7 @@ function App() {
             </Main>
             <div className='logo-container'>
               <FaHeart />
-              {switcher ? <Logo className='headerH' to={"/Favorite"}> Reservation</Logo> : 
+              {switcher ? <Logo className='headerH' to={"/Reservation"}> Reservation</Logo> : 
               <Logo className='headerH' to={"/Favorite"}> Favourites</Logo>}
             </div>
           </Nav>
@@ -167,16 +171,15 @@ function App() {
           : 
           <SecNav >
             <ul>
-              <li>Menu</li>  
-              <li>Order Online</li>
-              <li>Cart</li>  
+              <li><Link to='/Menu'>Menu</Link></li>  
+              <li><Link to="/">Order Online</Link></li>
+              <li><Link to="/Cart">Cart</Link></li>  
             </ul>
           </SecNav>}
+          {localStorage.getItem("role") && <>{localStorage.getItem("role") == "admin" && <AdminLayout/>}</>}
           <favContext.Provider value={providerValue}>
             <Pages switcher={switcher} toggle={onToggle}/>
           </favContext.Provider>
-        
-      
     </div>
   );
 }
@@ -219,7 +222,7 @@ const SecNav = styled.div`
     text-decoration: none;
     font-size: 1.2rem;
     cursor: pointer;
-    border-bottom: 1px solid black;
+    // border-bottom: 1px solid black;
   }
 `
 const Main = styled.div`

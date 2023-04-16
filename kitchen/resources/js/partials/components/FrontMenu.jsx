@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 
 export default function FrontMenu() {
@@ -7,7 +8,7 @@ export default function FrontMenu() {
       {/* <p className='centerText'>menu</p> */}
       <h1 className='centerText'>OUR DELICIOUS MENU</h1>
       <div className="center">
-        <Button>VIEW OUR MENU</Button>
+        <Button to={"/Menu"}>VIEW OUR MENU</Button>
       </div>
       
     </Wrapper>
@@ -37,7 +38,7 @@ h1 {
   justify-content: space-around;
 }
 `
-const Button = styled.button`
+const Button = styled(Link)`
   padding: 1rem 2rem;
   // color: #313131;
   color: white;

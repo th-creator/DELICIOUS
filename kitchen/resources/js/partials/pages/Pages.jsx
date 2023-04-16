@@ -11,6 +11,10 @@ import Restaurant from './restaurant'
 import Login from './Login'
 import Register from './register'
 import ReservationForm from '../components/ReservationForm'
+import Reservation from './Reservation'
+import HandleReservation from '../components/HandleReservations'
+import AddMeal from '../components/AddMeal'
+import Menu from './Menu'
 
 function Pages({toggle, switcher}) {
   const home = switcher ?  <Restaurant /> : <Home toggle={toggle} />
@@ -31,10 +35,15 @@ function Pages({toggle, switcher}) {
             <Route path="/recipe/:name" element={<Recipe/>} />  
           </>
           :
+          switcher ?
           <>
-          <Route path="/ReservationForm" element={<ReservationForm/>} />  
-
+            <Route path="/ReservationForm" element={<ReservationForm/>} />  
+            <Route path="/Reservation" element={<Reservation/>} />  
+            <Route path="/HandleReservation" element={<HandleReservation/>} />  
+            <Route path="/AddMeal" element={<AddMeal/>} />  
+            <Route path="/Menu" element={<Menu/>} />  
           </>
+          : <></>
         }   
         <Route path='*' element={<Page404/>}  />
       </Routes>  

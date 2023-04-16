@@ -20,6 +20,7 @@ class CreateReservationsTable extends Migration
             $table->string("name");
             $table->string("num_person");
             $table->string("phone");
+            $table->integer("state")->default(0);
             $table->string("user_id");
             $table->timestamps();
         });

@@ -1,16 +1,20 @@
 import axios from 'axios'
 import React, { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 
 export default function ReservationForm() {
   const  [reserve, setReserve] = useState({})
+  const navigate = useNavigate()
   const handleChange = (e) => {
     setReserve(prev => ({...prev,[e.target.name]: e.target.value}))
   } 
   const storeReservation = (e) => {
     e.preventDefault()
     console.log(reserve);
-    axios.post("/api/Reservation",reserve) .then(res => console.log(res)).catch(err => console.log(err))
+    axios.post("/api/Reservation",reserve) .then(res => {
+      navigate(`/Home`);
+    }).catch(err => console.log(err))
   }
   return (
     <Wrapper>
@@ -35,13 +39,13 @@ export default function ReservationForm() {
 
                             <select onChange={handleChange} name = "hour">
                                 <option value = "-1">Select Hour</option>
-                                <option value = "10">10: 00</option>
-                                <option value = "12">12: 00</option>
-                                <option value = "14">14: 00</option>
-                                <option value = "16">16: 00</option>
-                                <option value = "18">18: 00</option>
-                                <option value = "20">20: 00</option>
-                                <option value = "22">22: 00</option>
+                                <option value = "10: 00">10: 00</option>
+                                <option value = "12: 00">12: 00</option>
+                                <option value = "14: 00">14: 00</option>
+                                <option value = "16: 00">16: 00</option>
+                                <option value = "18: 00">18: 00</option>
+                                <option value = "20: 00">20: 00</option>
+                                <option value = "22: 00">22: 00</option>
                             </select>
                         </div>
 

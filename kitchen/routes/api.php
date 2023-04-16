@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\MealController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RecipesController;
@@ -43,3 +44,7 @@ Route::middleware('auth:sanctum')->get('/user', [UserController::class, "getUser
 // });
  
 Route::apiResource("/Reservation", ReservationController::class);
+Route::get("/getReservations/{id}", [ReservationController::class,"getReservations"]);
+Route::put("/setStateReservation/{id}", [ReservationController::class,"setStateReservation"]);
+
+Route::apiResource("/Meals", MealController::class);

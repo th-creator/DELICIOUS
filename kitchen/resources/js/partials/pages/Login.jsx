@@ -23,7 +23,7 @@ export default function Login() {
         console.log(res.data.user);
         setLoginError([])
         localStorage.setItem("access_token",res.data.token)
-        localStorage.setItem("role",res.data.user.role)
+        localStorage.setItem("role",res.data.user.roles[0].name)
 				dispatch(login({name:res.data.user.name,email:res.data.user.email,role:res.data.user.role,id:res.data.user.id}))
         navigate(`/Home`);
       }

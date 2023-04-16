@@ -16,5 +16,6 @@ class Reservation extends Model
         'num_person',
         'phone',
         'name',
+        'state',
     ];
 }
