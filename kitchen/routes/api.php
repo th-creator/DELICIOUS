@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DeliveryController;
 use App\Http\Controllers\MealController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -17,6 +18,10 @@ use App\Http\Controllers\UserController;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+
+Route::post('forgot',[UserController::class,'forgot']);
+Route::post('reset',[UserController::class,'reset']);
+
 // Route::resource( name: 'recipes', controller: RecipesController::class);
 
 Route::get('/recipes',[RecipesController::class,'index']);
@@ -48,3 +53,4 @@ Route::get("/getReservations/{id}", [ReservationController::class,"getReservatio
 Route::put("/setStateReservation/{id}", [ReservationController::class,"setStateReservation"]);
 
 Route::apiResource("/Meals", MealController::class);
+Route::apiResource("/Deliveries", DeliveryController::class);

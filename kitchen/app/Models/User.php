@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use App\Models\Provider;
+use App\Models\Delivery;
 
 class User extends Authenticatable
 {
@@ -47,7 +49,17 @@ class User extends Authenticatable
         return $this->hasMany(Recipes::class, 'user_id','id');
     }
 
+    public function deliveries()
+    {
+        return $this->hasMany(Delivery::class);
+    }
+
     public function roles() {
         return $this->belongsToMany(Role::class);
+    }
+
+    public function providers()
+    {
+        return $this->hasMany(Provider::class, 'user_id', 'id');
     }
 }

@@ -2,21 +2,47 @@ import React, { useEffect, useState } from 'react'
 import {Splide, SplideSlide} from '@splidejs/react-splide';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
+import {useSelector, useDispatch} from "react-redux"
+import { addToCart, modifyCart } from '../actions';
 
 export default function Menu() {
   const [meals , setMeals] = useState([])
+  const [juices, setJuices] = useState([])
+  const [food, setFood] = useState([])
+  const items = useSelector(state => state.cartReducer)
+  const dispatch = useDispatch();
+
   useEffect(() => {
     axios.get("/api/Meals",{
     headers: {
       Authorization : `Bearer ${localStorage.getItem("access_token")}`
       }
-    }).then(res => setMeals(res.data.Meals))
+    }).then(res => {
+      setFood(res.data.Meals.filter(juice => juice.type === "food"))
+      setJuices(res.data.Meals.filter(juice => juice.type === "juice"))
+    })
     .catch(err => console.log(err)) 
+    
   },[])
- 
+  
+  const addCart = (meal) => {
+    const data = {...meal, quantity: 1}
+    console.log(data);
+    let flag = true
+    items.forEach(item => {
+      if(item.id === meal.id ) {
+        dispatch(modifyCart({id:meal.id, quantity: 1 })) 
+        return flag = false
+      }
+    });
+    flag && dispatch(addToCart(data))
+  }
   
   return (
-    <div className="swiper featured-slider">
+    <div>
+      <Header >
+        <h1 class="header-1">Juice Menu</h1>
+      </Header>
       <div className="swiper-wrapper">
         <Splide options={{
           type: 'loop',
@@ -34,24 +60,60 @@ export default function Menu() {
             }
           }
         }}>
-          {meals.length > 0 &&  meals.map(meal => {
+          {juices.length > 0 &&  juices.map(meal => {
             return (
               <SplideSlide key={meal.id}>
                 <Card >
-                  <Link to={'/Meal/'+meal.id}>
+                  <div>
                     <p>{meal.name}</p>
+                    <button type='button' className='add' onClick={() => addCart(meal)}>add</button>
                     <img src={'/storage/meals/'+meal.path} alt={meal.name} />
                     <Gradient />
-                  </Link>
+                  </div>
                 </Card>
               </SplideSlide>)
           })} 
         </Splide>
       </div>
-
+      <Header >
+        <h1 class="header-1">Meal Menu</h1>
+      </Header>
+      <div style={{marginBottom: '60px'}} className="swiper-wrapper">
+        <Splide options={{
+          type: 'loop',
+          arrows: true,
+          pagination: false,
+          drag: "free",
+          perMove: 1,
+          autoplay: true,
+          interval: 3000,
+          gap: "1.4rem",
+          autoWidth: true,
+          breakpoints: {
+            768: {
+              gap: "1rem",
+            }
+          }
+        }}>
+          {food.length > 0 &&  food.map(meal => {
+            return (
+              <SplideSlide key={meal.id}>
+                <Card >
+                  <div >
+                    <p>{meal.name}</p>
+                    <button type='button' className='add' onClick={() => addCart(meal)}>add</button>
+                    <img src={'/storage/meals/'+meal.path} alt={meal.name} />
+                    <Gradient />
+                  </div>
+                </Card>
+              </SplideSlide>)
+          })} 
+        </Splide>
+      </div>
     </div>
   )
 }
+
 const Card = styled.div`
   min-height: 25rem;
   border-radius: 2rem;
@@ -82,7 +144,43 @@ const Card = styled.div`
     justify-content: center;
     align-items: center;
     }
+  .add {
+    font-weight: 600;
+    font-size: 1rem;
+    z-index: 10;
+    margin-inline: 45px;
+    margin-bottom: 5px;
+    left: 0;
+    right: 0;
+    position: absolute;
+    padding: 20px;
+    background: transparent;
+    border: 1px solid black;
+    border-radius: 10px;
+    color: black;
+    bottom: 0;
+    cursor: pointer;
+  }
+  
 ` 
+const Header = styled.header`
+  width: 100%;
+  display: inline-block;
+  flex-direction: column;
+  align-items: center;
+h1 {
+  position: relative;
+  font-size: 60px;
+  font-weight: 600;
+  color: transparent;
+  -webkit-background-clip: text;
+  background-clip: text;   
+}
+.header-1{
+  text-align: center;
+  background-image: repeating-radial-gradient(closest-side at 20px 20px,#49484b,#848180,#040404);
+}
+`
 const Gradient = styled.div`
   z-index: 3;
   position: absolute;

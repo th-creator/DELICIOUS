@@ -1,6 +1,11 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Http\Requests\ForgotPasswordRequest;
+use App\Http\Requests\ResetPasswordRequest;
+use App\Http\Resources\UserResource;
+use App\Models\PasswordReset;
+use App\Notifications\PasswordResetNotification;
 use Illuminate\Support\Str;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -50,6 +55,69 @@ class UserController extends Controller
         $user = User::where("id",auth()->id())->with('roles')->get();
         
         return response()->json($user,200);
+    }
+    
+    public function forgot(ForgotPasswordRequest $request) {
+        $user = ($query = User::query());
+        $user = $user->where($query->qualifyColumn('email'),$request->input('email'))->first();
+        
+        if (!$user || !$user->email) {
+            return response()->json('email address is incorrect',404);
+        }
+
+        $resetPasswordToken = str_pad(random_int(1,9999),4,'0',STR_PAD_LEFT);
+        $userPassReset = PasswordReset::where('email',$user->email);
+
+        if(!$userPassReset->count()) {
+            PasswordReset::create([
+                'email' => $user->email,
+                'token' => $resetPasswordToken,
+            ]);
+        } else {
+            $userPassReset->update([
+                'email' => $user->email,
+                'token' => $resetPasswordToken,
+            ]);
+        }
+
+        $user->notify(new PasswordResetNotification($resetPasswordToken));
+        
+        return response()->json('a code has been sent to your email address',200);
+    }
+
+    public function reset(ResetPasswordRequest $request) {
+        $attributes = $request->validated();
+
+        $user = User::where("email",$attributes['email'])->first();
+
+        if (!$user) {
+            return response()->json('no record was found',404);
+        }
+
+        $resetRequest = PasswordReset::where('email',$user->email)->first();
+
+        if (!$resetRequest || $resetRequest->token != $request->token) {
+            return response()->json('token mismatch',400);
+        }
+
+        $user->fill([
+            'password' => Hash::make($attributes['password']),
+        ]);
+
+        $user->save();
+
+        $user->tokens()->delete();
+
+        $resetRequest->delete();
+
+        $token = $user->createToken('authToken')->plainTextToken;
+
+        $loginResponse = [
+            'user' => UserResource::make($user),
+            'token' => $token
+        ];
+
+        return response()->json($loginResponse,200);
     }
     //changing user name
     public function nameHandler(Request $request) {

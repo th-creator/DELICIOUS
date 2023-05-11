@@ -62,7 +62,7 @@ export default function Register() {
     
       <form onSubmit={formup} className="right">
       <h5>Signup</h5>
-      <p>already have an account? <Link to="/Login">Creat Your Account</Link></p>
+      <p>already have an account? <Link to="/Login">log into Your Account</Link></p>
       <div className="inputs">
         <input onChange={handleChange} type="text" placeholder="name" name='name'/>
         {signupError.name && <p>{signupError.name}</p>}
@@ -123,14 +123,13 @@ body {
   color: #FFFFFF;
   background-size: cover;
   background-repeat: no-repeat;
-  background-image: url("https://i.pinimg.com/736x/5d/73/ea/5d73eaabb25e3805de1f8cdea7df4a42--tumblr-backgrounds-iphone-phone-wallpapers-iphone-wallaper-tumblr.jpg");
+  background-image: url("/images/cookies.webp");
   overflow: hidden;
 }
 .box-form .left .overlay {
   padding: 30px;
   width: 100%;
   height: 100%;
-  background: #5961f9ad;
   overflow: hidden;
   box-sizing: border-box;
 }
@@ -207,8 +206,8 @@ body {
   border: 0;
   cursor: pointer;
   outline: 0;
-  box-shadow: 0px 4px 20px 0px #49c628a6;
-  background-image: linear-gradient(135deg, #70F570 10%, #49C628 100%);
+  box-shadow: 0px 4px 20px 0px #101110a6;
+  background-image: linear-gradient(135deg,#afb1af 10%,#060805 100%);
 }
 
 label {

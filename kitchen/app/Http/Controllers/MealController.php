@@ -32,6 +32,7 @@ class MealController extends Controller
             'jpg',
             'jpeg',
             'png', 
+            'webp', 
             'jfif'
         );
         if (!in_array($extension,$supported_image)) {

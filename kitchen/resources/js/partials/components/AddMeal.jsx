@@ -29,12 +29,14 @@ export default function AddMeal() {
     fd.append('type', formValues.type);
     fd.append('price', formValues.price);
     fd.append('description', formValues.description);
+    
     axios.post("/api/Meals",fd,{
       headers: {
         Authorization : `Bearer ${localStorage.getItem("access_token")}`
         }
-      }).then(res => console.log(res))
+      }).then(res => setFormValues({name: "",type: "",price: "", description: ""}))
       .catch(err => console.log(err))
+    setimage({})
   }
   return (
     <Wrapper class="shade">
@@ -42,15 +44,15 @@ export default function AddMeal() {
           <form class="form" onSubmit={storeMeal}>
               <p>
                   <label>Name: </label>
-                  <input type="text" onChange={onChange} name='name' />
+                  <input value={formValues.name} type="text" onChange={onChange} name='name' />
               </p>
               <p>
                   <label>Type: </label>
-                  <input type="text" onChange={onChange} name='type' />
+                  <input value={formValues.type} type="text" onChange={onChange} name='type' />
               </p>
               <p>
                   <label>Price: </label>
-                  <input type="text" onChange={onChange} name='price' />
+                  <input value={formValues.price} type="text" onChange={onChange} name='price' />
               </p>
               <p>
                   <label htmlFor='image'>Add Picture: </label>
@@ -59,7 +61,7 @@ export default function AddMeal() {
               </p>
               <p>
                   <label>Description: </label>
-                  <textarea onChange={onChange} name='description'></textarea>
+                  <textarea value={formValues.description} onChange={onChange} name='description'></textarea>
               </p>
               <p class="wipeout">
                   <input onClick={storeMeal} type="submit" value="Add"  />

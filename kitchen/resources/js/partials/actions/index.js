@@ -23,3 +23,36 @@ export const isAuth = () => {
   )
 }
 
+export const initCart = () => {
+  return (
+    {
+      type: 'INIT_CART'
+    }
+  )
+}
+
+export const addToCart = (item) => {
+  return (
+    {
+      type: 'ADD_CART',
+      payload: item
+    }
+  )
+}
+
+export const deleteFromCart = (id) => {
+  return (
+    {
+      type: 'DELETE_CART',
+      payload: id
+    }
+  )
+}
+export const modifyCart = (meal) => {
+  return (
+    {
+      type: 'MODIFY_CART',
+      payload: meal
+    }
+  )
+}
