@@ -13,6 +13,8 @@ class Delivery extends Model
 
     protected $fillable = [
         'place',
+        'state',
+        'method',
         'date',
         'user_id',
         'total',
@@ -20,12 +22,10 @@ class Delivery extends Model
 
     public function meals() {
         return $this->belongsToMany(Meal::class)->withPivot('quantity');
-        //add this for the quantity column
-        // ;
     }
 
     public function users()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'user_id','id');
     }
 }

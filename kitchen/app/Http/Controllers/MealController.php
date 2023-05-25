@@ -16,7 +16,6 @@ class MealController extends Controller
         $Meal = $request->validate([
             'name' => "required",
             'type' => "required",
-            'description' => "required",
             'price' => "required",
         ]);
         if ($request->hasFile('img'))
@@ -63,7 +62,6 @@ class MealController extends Controller
         $Meal = $request->validate([
             'name' => "required",
             'type' => "required",
-            'description' => "required",
             'price' => "required",
         ]);
 

@@ -41,7 +41,7 @@ export default function Menu() {
   return (
     <div>
       <Header >
-        <h1 class="header-1">Juice Menu</h1>
+        <h1 className="header-1">Juice Menu</h1>
       </Header>
       <div className="swiper-wrapper">
         <Splide options={{
@@ -66,6 +66,7 @@ export default function Menu() {
                 <Card >
                   <div>
                     <p>{meal.name}</p>
+                    <p className='price'>{meal.price} DH</p>
                     <button type='button' className='add' onClick={() => addCart(meal)}>add</button>
                     <img src={'/storage/meals/'+meal.path} alt={meal.name} />
                     <Gradient />
@@ -76,7 +77,7 @@ export default function Menu() {
         </Splide>
       </div>
       <Header >
-        <h1 class="header-1">Meal Menu</h1>
+        <h1 className="header-1">Meal Menu</h1>
       </Header>
       <div style={{marginBottom: '60px'}} className="swiper-wrapper">
         <Splide options={{
@@ -101,6 +102,7 @@ export default function Menu() {
                 <Card >
                   <div >
                     <p>{meal.name}</p>
+                    <p className='price'>{meal.price} DH</p>
                     <button type='button' className='add' onClick={() => addCart(meal)}>add</button>
                     <img src={'/storage/meals/'+meal.path} alt={meal.name} />
                     <Gradient />
@@ -132,20 +134,22 @@ const Card = styled.div`
     position: absolute;
     z-index: 10;
     left: 50%;
-    bottom: 0%;
+    bottom: 3%;
     transform: translate(-50%,0%);
     color: white;
     width: 100%; 
     text-align: center;
     font-weight: 600;
-    font-size: 1rem;
+    font-size: 1.1rem;
     height: 40%;
     display: flex;
     justify-content: center;
     align-items: center;
     }
+  .price {
+    bottom: -3%;
+  }
   .add {
-    font-weight: 600;
     font-size: 1rem;
     z-index: 10;
     margin-inline: 45px;
@@ -154,12 +158,20 @@ const Card = styled.div`
     right: 0;
     position: absolute;
     padding: 20px;
-    background: transparent;
-    border: 1px solid black;
     border-radius: 10px;
     color: black;
     bottom: 0;
+    padding: 1rem 2rem;
+    color: white;
+    background: transparent;
+    border: 2px solid white;
+    font-weight: 600;
     cursor: pointer;
+    
+    &:hover {
+      color: white;
+      border-color: black;
+    }
   }
   
 ` 

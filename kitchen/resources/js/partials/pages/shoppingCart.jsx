@@ -3,41 +3,42 @@ import styled from 'styled-components'
 import {useSelector, useDispatch} from "react-redux"
 import { initCart, modifyCart, deleteFromCart } from '../actions';
 import axios from 'axios';
-import {AiOutlinePlusCircle, AiOutlineMinusCircle} from "react-icons/ai"
 import {HiTrash} from "react-icons/hi"
 
 export default function ShoppingCart() {
   const dispatch = useDispatch()
   const [total,setTotal] = useState(0)
+  const [model,setmodel] = useState(false)
+  const [place,setPlace] = useState(false)
   let items = useSelector(state => state.cartReducer)
   console.log(items);
-  const postDemand = async () => {
+  const postDemand = async (e) => {
+    e.preventDefault()
     var arr = []
     arr = items.map(item => item.id)
     let array = items.map(item => item.quantity)
 
     let demands = {
-      place:'marrakesh',
+      place:place,
       date: '2023-05-05',
       total: total,
       meals: arr,
       quantity: array,
     }
     console.log(demands);
-    // demands.forEach(async demand => {
       await axios.post(`/api/Deliveries`,demands,{
         headers: {
           Authorization : `Bearer ${localStorage.getItem("access_token")}`
           }
         }).then(res => console.log(res))
-    // });
     
-    // dispatch(initCart())
+    dispatch(initCart())
+    setmodel(false)
+    setPlace("")
   }
   const calculateTotal = () => {
     items.length > 0 && setTotal(items.reduce((sum, item) => ((item.quantity*item.price) + sum),0))
     }
-  console.log(total);
     const addQuantity = (book) => {
     dispatch(modifyCart({id:book.id, quantity: 1 }))
   }
@@ -51,9 +52,13 @@ export default function ShoppingCart() {
   useEffect(() => {
     calculateTotal()
   },[items])
-    return (
+  const toggleValidate = async () => {
+    setmodel(!model)
+  }
+
+  return (
     <Wrapper>
-      <div className="shopping-cart">
+      <div className={model ? "shopping-cart darken" : "shopping-cart"}>
         <div className="title">
           Order Online
         </div>
@@ -93,15 +98,78 @@ export default function ShoppingCart() {
           <div className='total-price prix'> {total} DH</div>
         </div>
         <div className='total'>
-          <button onClick={postDemand} className='checkout-btn' type='button'>Make an Order</button>
+          <button onClick={toggleValidate} className='checkout-btn' type='button'>Make an Order</button>
         </div>
         </>}
       </div>
+      {  model &&
+        <div className='form-model'>
+          <form onSubmit={postDemand}> 
+            <div>
+              <input className='order-input' type="text" name="place" id="" onChange={(e) => setPlace(e.target.value)} placeholder='enter your address'/>
+            </div>
+            {/* <div>
+              <input className='order-input' type="date" name="" id="" placeholder='enter the date'/>
+            </div> */}
+            <h6 onClick={toggleValidate}>Return To Cart</h6>
+            <button className='model-btn'>Order Now</button>
+          </form>
+        </div>}
     </Wrapper>
   )
 }
 
 const Wrapper = styled.section`
+position: relative;
+.form-model {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 25%;
+  bottom: 23%;
+  margin: auto;
+  width: 440px;
+  height: fit-content;
+  border: 1px solid white;
+  border-radius: 10px;
+  background-color: white;
+  padding: 30px;
+  filter: brightness(100%);
+  
+  box-shadow: 0 0 0 9999px #000000b0;
+}
+.order-input {
+  margin-block: 10px;
+  padding: 15px;
+  width: 100%;
+  border-radius: 10px;
+  background-color: #A7BAF54A;
+  border-color: transparent;
+  color: black;
+}
+.form-model h6 {
+  text-decoration: underline;
+  font-family: Urbanist;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 22px;
+  text-align: left;
+  cursor: pointer;
+}
+.model-btn {
+  color: #fff;
+  font-size: 16px;
+  padding: 12px 35px;
+  border-radius: 50px;
+  display: inline-block;
+  border: 0;
+  cursor: pointer;
+  outline: 0;
+  box-shadow: 0px 4px 20px 0px #101110a6;
+  background-image: linear-gradient(135deg,#afb1af 10%,#060805 100%);
+  margin-block: 20px;
+  width: 100%;
+}
 .shopping-cart {
   width: 750px;
   // height: 423px;
@@ -109,7 +177,6 @@ const Wrapper = styled.section`
   background: #FFFFFF;
   box-shadow: 1px 2px 3px 0px rgba(0,0,0,0.10);
   border-radius: 6px;
- 
   display: flex;
   flex-direction: column;
 }

@@ -9,7 +9,8 @@ export default function Register() {
 	const dispatch = useDispatch()
 	const navigate = useNavigate()
 	const [logup,setLogup] = useState({
-		name:"",
+		firstName:"",
+		lastName:"",
 		email:"",
 		password:"",
 		password_confirmation:""
@@ -28,7 +29,7 @@ export default function Register() {
 				setSignupError([])
         localStorage.setItem("access_token",res.data.token)
         // localStorage.setItem("role",res.data.user)
-				dispatch(login({name:res.data.user.name,email:res.data.user.email,role:res.data.user.role,id:res.data.user.id}))
+				dispatch(login({firstName:res.data.user.firstName,lastName:res.data.user.lastName,email:res.data.user.email,path:res.data.user.path,roles:res.data.user.roles,id:res.data.user.id}))
         navigate(`/Home`);
       }
     }).catch((err) => {
@@ -48,13 +49,12 @@ export default function Register() {
       <div className="box-form">
     <div className="left">
       <div className="overlay">
-      <h1>Hello World.</h1>
+      <h1>Welcome To Delecious.</h1>
       <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.
       Curabitur et est sed felis aliquet sollicitudin</p>
       <span>
         <p>login with social media</p>
-        <a href="#"><i className="fa fa-facebook" aria-hidden="true"></i></a>
-        <a href="#"><i className="fa fa-twitter" aria-hidden="true"></i> Login with Twitter</a>
+        <a href="api/login/google"><img className="social-logo" src="images/google-logo.png" alt=""/> Sign with Google</a>
       </span>
       </div>
     </div>
@@ -62,23 +62,25 @@ export default function Register() {
     
       <form onSubmit={formup} className="right">
       <h5>Signup</h5>
-      <p>already have an account? <Link to="/Login">log into Your Account</Link></p>
+      <p className='log'>already have an account? <Link to="/Login">log into Your Account</Link></p>
       <div className="inputs">
-        <input onChange={handleChange} type="text" placeholder="name" name='name'/>
-        {signupError.name && <p>{signupError.name}</p>}
+        <input onChange={handleChange} type="text" placeholder="first name" name='firstName'/>
+        {signupError.firstName && <p className='err'>{signupError.firstName}</p>}
+        <input onChange={handleChange} type="text" placeholder="last name" name='lastName'/>
+        {signupError.lastName && <p className='err'>{signupError.lastName}</p>}
         <input onChange={handleChange} type="email" placeholder="email" name='email'/>
-        {signupError.email && <p>{signupError.email}</p>}
+        {signupError.email && <p className='err'>{signupError.email}</p>}
         <br/>
         <input onChange={handleChange} type="password" placeholder="password" name='password'/>
-        {signupError.password && <p>{signupError.password}</p>}
+        {signupError.password && <p className='err'>{signupError.password}</p>}
         <input onChange={handleChange} type="password" placeholder="repeat password" name='password_confirmation'/>
-        {signupError.password_confirmation && <p>{signupError.password_confirmation}</p>}
+        {signupError.password_confirmation && <p className='err'>{signupError.password_confirmation}</p>}
       </div>
         
         <br/><br/>
         
         <br/>
-        <button type='submit'>Login</button>
+        <button type='submit'>Register</button>
     </form>
     </div>
   </Form>
@@ -145,21 +147,28 @@ body {
   font-weight: 900;
 }
 .box-form .left .overlay span a {
-  background: #3b5998;
-  color: #FFFFFF;
+  background: #fff;
+  color: #000;
   margin-top: 10px;
-  padding: 14px 50px;
+  padding: 14px 40px 14px 60px;
   border-radius: 100px;
   display: inline-block;
   box-shadow: 0 3px 6px 1px #042d4657;
+  position: relative;
+  text-decoration: none;
+  font-weight: 600;
 }
-.box-form .left .overlay span a:last-child {
-  background: #1dcaff;
-  margin-left: 30px;
+.box-form .left .overlay span a img{
+  width: 24px;
+  margin-right: 10px;
+  position: absolute;
+  top: 12px;
+  left: 25px;
 }
 .box-form .right {
   padding: 40px;
   overflow: hidden;
+  width: 80%;
 }
 @media (max-width: 980px) {
   .box-form .right {
@@ -170,7 +179,7 @@ body {
   font-size: 6vmax;
   line-height: 0;
 }
-.box-form .right p {
+.box-form .right .log {
   font-size: 14px;
   color: #B0B3B9;
 }
@@ -250,5 +259,8 @@ label span.text-checkbox {
 
 label input[type="checkbox"] {
   display: none;
+}
+.err {
+  color: #eb5a5a;
 }
 `

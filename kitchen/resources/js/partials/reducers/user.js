@@ -11,12 +11,7 @@ export const userReducer = (state = null, action) => {
           headers: {
             Authorization : `Bearer ${localStorage.getItem("access_token")}`
             }
-        }).then(res => {
-          // if (res.status == 200) {
-            return  res.data
-          // }
-          console.log(res);
-        })
+        }).then(res => (auth = res.data))
       }
       return auth
     default: 

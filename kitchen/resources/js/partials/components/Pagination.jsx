@@ -9,7 +9,7 @@ export default function Pagination({totalPosts, postsPerPage, setCurrentPage, cu
 
   return (
     <Paginater>
-      {
+      { 
         pages.map((page,index) => (<button className={page== currentPage ? 'active' : ''} key={index} onClick={() => setCurrentPage(page)}>{page}</button>))
       }
     </Paginater>

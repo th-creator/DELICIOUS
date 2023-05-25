@@ -9,7 +9,13 @@ class DeliveryController extends Controller
 {
     public function index()
     {
-        $deliveries = Delivery::with('meals')->get();
+        $deliveries = Delivery::with('meals')->with('users')->get();
+        return response()->json(["deliveries"=>$deliveries],200);
+    }
+
+    public function getOrders()
+    {
+        $deliveries = Delivery::with('meals')->where("user_id",auth("sanctum")->id())->get();
         return response()->json(["deliveries"=>$deliveries],200);
     }
 
@@ -23,11 +29,10 @@ class DeliveryController extends Controller
             'quantity' => 'nullable|array',
         ]);
         $data['user_id'] = auth('sanctum')->id();
-        // return response()->json($data);
-
+        $data['state'] = -1;
+        
         $delivery = Delivery::create($data);
         foreach ($data['meals'] as $key => $value) {
-            // return response()->json([$data['meals'][$key],'q'=>$data['quantity'][$key]]);
             $delivery->meals()->attach($data['meals'][$key],["quantity"=>$data['quantity'][$key]]);
         }
         
@@ -59,5 +64,12 @@ class DeliveryController extends Controller
     {
         $delivery->delete();
         return response()->json(['message' => 'Delivery deleted successfully'], 200);
+    }
+    public function DetachOrder(Request $request,$id)
+    {
+        $report = Delivery::where("id",$request->delivery_id)->get()->first();
+        $report->meals()->detach($id);
+
+        return response()->json(['message' => 'order deleted successfully']);
     }
 }

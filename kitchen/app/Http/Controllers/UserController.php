@@ -19,17 +19,20 @@ class UserController extends Controller
     // create new user
     public function store(Request $request) {
         $formFields = $request->validate([
-            'name' => ['required','min:3'],
+            'firstName' => ['required','min:2'],
+            'lastName' => ['required','min:2'],
             'email' => ['required','email',Rule::unique('users','email')],
             'password' => 'required|confirmed|min:6'
         ]);
 
         //hash password
         $formFields['password'] = bcrypt($formFields['password']);
+        $formFields['path'] = "default_profile.png";
         // create user
         $user = User::create($formFields);
+        $user->roles()->attach([2]);
         //login
-        return response()->json(["user" => $user, "token" => $user->createToken("Api Token of ".$user->name)->plainTextToken,"message" =>"user created and in"],200);
+        return response()->json(["user" => $user, "token" => $user->createToken("Api Token of ".$user->firstName)->plainTextToken,"message" =>"user created and in"],200);
         }
     // login a user
     public function authenticate(Request $request) {
@@ -42,7 +45,7 @@ class UserController extends Controller
         }
         $user = User::where('email',$request->email)->with('roles')->first();
         Session::put('roles', $user);
-        return response()->json(["user" => $user, "token" => $user->createToken("Api Token of ".$user->name)->plainTextToken,"message" =>"user in"],200);
+        return response()->json(["user" => $user, "token" => $user->createToken("Api Token of ".$user->firstName)->plainTextToken,"message" =>"user in"],200);
         
     }
     //logout user
@@ -122,7 +125,8 @@ class UserController extends Controller
     //changing user name
     public function nameHandler(Request $request) {
         $name = $request->validate([
-            "name" => "required"
+            "firstName" => "required",
+            "lastName" => "required",
         ]);
 
         User::where("id",auth()->id())->Update($name);

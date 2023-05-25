@@ -12,55 +12,60 @@ export default function ReservationForm() {
   const storeReservation = (e) => {
     e.preventDefault()
     console.log(reserve);
-    axios.post("/api/Reservation",reserve) .then(res => {
-      navigate(`/Home`);
+    axios.post("/api/Reservation",reserve,{
+      headers: {
+        Authorization : `Bearer ${localStorage.getItem("access_token")}`
+        }
+    }) .then(res => {
+      console.log(res);
+      setReserve({day:"-1",hour:"-1",name:"",phone:"",num_person:""})
+      // navigate(`/Home`);
     }).catch(err => console.log(err))
   }
   return (
     <Wrapper>
       <div class = "card-container">
-                <div class = "card-img">
-                </div>
+        <div class = "card-img">
+        </div>
+        <div class = "card-content">
+          <h3>Reservation</h3>
+          <form onSubmit={storeReservation}>
+              <div class = "form-row">
+                  <select onChange={handleChange} value={reserve.day} name="day">
+                      <option value = "-1">Select Day</option>
+                      <option value = "sunday">Sunday</option>
+                      <option value = "monday">Monday</option>
+                      <option value = "tuesday">Tuesday</option>
+                      <option value = "wednesday">Wednesday</option>
+                      <option value = "thursday">Thursday</option>
+                      <option value = "friday">Friday</option>
+                      <option value = "saturday">Saturday</option>
+                  </select>
 
-                <div class = "card-content">
-                    <h3>Reservation</h3>
-                    <form onSubmit={storeReservation}>
-                        <div class = "form-row">
-                            <select onChange={handleChange} name = "day">
-                                <option value = "-1">Select Day</option>
-                                <option value = "sunday">Sunday</option>
-                                <option value = "monday">Monday</option>
-                                <option value = "tuesday">Tuesday</option>
-                                <option value = "wednesday">Wednesday</option>
-                                <option value = "thursday">Thursday</option>
-                                <option value = "friday">Friday</option>
-                                <option value = "saturday">Saturday</option>
-                            </select>
+                  <select onChange={handleChange} value={reserve.hour} name = "hour">
+                      <option value = "-1">Select Hour</option>
+                      <option value = "10: 00">10: 00</option>
+                      <option value = "12: 00">12: 00</option>
+                      <option value = "14: 00">14: 00</option>
+                      <option value = "16: 00">16: 00</option>
+                      <option value = "18: 00">18: 00</option>
+                      <option value = "20: 00">20: 00</option>
+                      <option value = "22: 00">22: 00</option>
+                  </select>
+              </div>
 
-                            <select onChange={handleChange} name = "hour">
-                                <option value = "-1">Select Hour</option>
-                                <option value = "10: 00">10: 00</option>
-                                <option value = "12: 00">12: 00</option>
-                                <option value = "14: 00">14: 00</option>
-                                <option value = "16: 00">16: 00</option>
-                                <option value = "18: 00">18: 00</option>
-                                <option value = "20: 00">20: 00</option>
-                                <option value = "22: 00">22: 00</option>
-                            </select>
-                        </div>
+              <div class = "form-row">
+                  <input name='name' value={reserve.name} onChange={handleChange} type="text" placeholder="Full Name"/>
+                  <input name='phone' value={reserve.phone} onChange={handleChange} type="text" placeholder="Phone Number"/>
+              </div>
 
-                        <div class = "form-row">
-                            <input name='name' onChange={handleChange} type = "text" placeholder="Full Name"/>
-                            <input name='phone' onChange={handleChange} type = "text" placeholder="Phone Number"/>
-                        </div>
-
-                        <div class = "form-row">
-                            <input name='num_person' onChange={handleChange} type = "number" placeholder="How Many Persons?" min = "1"/>
-                            <input type = "submit" value = "BOOK TABLE"/>
-                        </div>
-                    </form>
-                </div>
-            </div>
+              <div class = "form-row">
+                  <input name='num_person' value={reserve.num_person} onChange={handleChange} type = "number" placeholder="How Many Persons?" min = "1"/>
+                  <input type = "submit" value = "BOOK TABLE"/>
+              </div>
+          </form>
+        </div>
+      </div>
     </Wrapper>
   )
 }

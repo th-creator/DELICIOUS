@@ -19,7 +19,6 @@ class ReservationController extends Controller
 
     public function store(Request $request) {
         $reservation = $request->validate([
-            'user_id' => "nullable",
             'day' => "required",
             'hour' => "required",
             'name' => "required",
@@ -28,7 +27,7 @@ class ReservationController extends Controller
         ]);
         
         $reservation["user_id"] = auth("sanctum")->id();
-
+        
         Reservation::create($reservation);
 
         return response()->json(["reservation created"],200);

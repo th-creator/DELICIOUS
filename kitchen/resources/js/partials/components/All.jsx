@@ -30,7 +30,7 @@ export default function All({toggle}) {
               </Link>
             </Card>
             )
-          })}
+          })} 
       </Grid>
       <Pagination totalPosts={recipees.length} 
       setCurrentPage={setCurrentPage} currentPage={currentPage} postsPerPage={postsPerPage} />

@@ -1,11 +1,11 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
 import axios from 'axios';
+import {AiOutlineClose} from "react-icons/ai"
 
-export default function AddMeal() {
-  const [formValues, setFormValues] = useState({})
-  const [errors, setErrors] = useState({})
-  const [img, setImg] = useState({})
+export default function AddMeal({setAddModel, getMeals}) {
+  const [formValues, setFormValues] = useState({name: "",type: "",price: ""})
+  const [addErrors, setAddErrors] = useState({})
   const [image, setimage] = useState({})
   const handleImage = (file) =>
   {
@@ -28,151 +28,190 @@ export default function AddMeal() {
     fd.append('name', formValues.name);
     fd.append('type', formValues.type);
     fd.append('price', formValues.price);
-    fd.append('description', formValues.description);
     
     axios.post("/api/Meals",fd,{
       headers: {
         Authorization : `Bearer ${localStorage.getItem("access_token")}`
         }
-      }).then(res => setFormValues({name: "",type: "",price: "", description: ""}))
-      .catch(err => console.log(err))
-    setimage({})
+      }).then(res => {
+        out()
+        setFormValues({name: "",type: "",price: ""})
+      })
+      .catch(err => {if(err.response.data) setAddErrors(err.response.data.errors)})
+      setimage({})
+      getMeals() 
+    
+  }
+  const out = () => {
+    setAddModel(false)
+    setFormValues({name: "",type: "",price: ""})
+    setAddErrors({})
   }
   return (
-    <Wrapper class="shade">
-      <div class="blackboard">
-          <form class="form" onSubmit={storeMeal}>
-              <p>
-                  <label>Name: </label>
-                  <input value={formValues.name} type="text" onChange={onChange} name='name' />
-              </p>
-              <p>
-                  <label>Type: </label>
-                  <input value={formValues.type} type="text" onChange={onChange} name='type' />
-              </p>
-              <p>
-                  <label>Price: </label>
-                  <input value={formValues.price} type="text" onChange={onChange} name='price' />
-              </p>
-              <p>
-                  <label htmlFor='image'>Add Picture: </label>
-                  <input onChange={ (e) => handleImage(e.target.files) } type="file" id="image" hidden/>
-                  <label className='txt'>{image.imagedata ? image.imagedata.name  : 'no file chosen'}</label>
-              </p>
-              <p>
-                  <label>Description: </label>
-                  <textarea value={formValues.description} onChange={onChange} name='description'></textarea>
-              </p>
-              <p class="wipeout">
-                  <input onClick={storeMeal} type="submit" value="Add"  />
-              </p>
-          </form>
-      </div>
-  </Wrapper>
+    <Container className="editModel">
+        <form onSubmit={storeMeal} className="wrapper">
+          <span className='out' onClick={out}><AiOutlineClose/></span>
+          <h4 className='title'>Add Meal</h4>
+          <div className='inp-wrapper'>
+              <label className='label' htmlFor="">Name</label>
+              <input className='inp-name' value={formValues.name} onChange={onChange} type="text" name="name" id="" />
+              {addErrors.name && <span className='err'>{addErrors.name}</span>}
+          </div>
+          <div className='inp-wrapper'>
+            <label className='label' htmlFor="">Type</label>
+            <input className='inp-name' value={formValues.type} onChange={onChange} type="text" name="type" id="" />
+            {addErrors.type && <span className='err'>{addErrors.type}</span>}
+          </div>
+          <div className='inp-wrapper'>
+            <label className='label' htmlFor="">Price</label>
+            <input className='inp-name' value={formValues.price} onChange={onChange} type="text" name="price" id="" />
+            {addErrors.price && <span className='err'>{addErrors.price}</span>}
+          </div>
+          <div className='inp-wrapper'>
+            <label className='label'>Add Picture: </label>
+            <input onChange={ (e) => handleImage(e.target.files) } type="file" id="image" hidden/>
+            <label htmlFor='image' className='upload'>+</label>
+            {image.imagedata &&<label className='txt'>{image.imagedata.name}</label>}
+          </div>
+          <div className='inp-wrapper'>
+            <button className='btn'>Add</button>
+          </div>
+        </form>
+      </Container>
   )
 }
 
-const Wrapper = styled.div`
-.shade {
-  overflow: auto;
+const Container = styled.section`
+  display: flex;
+  justify-content: center;
+  box-shadow: 0 0 0 9999px #000000b0;
   position: absolute;
-  top: 0;
+  border: 1px solid #E8F0FF;
+  border-radius: 30px;
+  width: 50%;
+  height: auto;
   left: 0;
-  bottom: 0;
   right: 0;
-  background-image: linear-gradient( 150deg, rgba(0, 0, 0, 0.65), transparent);
+  margin: auto;
+  top: 150px;
+  .title {
+    text-align: center;
+    font-size: 2rem;
+    font-family: monospace;
+    margin-block: 10px 45px;
+  }
+  .wrapper {
+    width: 100%;
+    height: auto;
+    padding: 30px;
+    border: 1px solid #E8F0FF;
+    border-radius: 30px;
+    background: white;
+    postion: relative;
+  }
+  .out {
+    position: absolute;
+    right: 42px;
+    font-size: x-large;
+    cursor: pointer;
+  }
+  .inp-wrapper {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+  }
+  .inp-wrapper-name {
+    display: flex;
+    flex-direction: row;
+  }
+  .column {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+  .inp , .inp-name{
+    border: 1px solid #979797;
+    border-radius: 10px;
+    background-color: white;
+    height: 50px;
+    padding-left: 12px;
+    margin: 20px 5px 5px;
+    font-size: 16px;
+  }
+  .upload {
+    border: 1px solid #979797;
+    border-radius: 10px;
+    background-color: white;
+    height: 50px;
+    padding-left: 12px;
+    margin: 20px 5px;
+    text-align: center;
+    font-size: 2rem;
+    padding-top: .6%;
+    font-weight: 900;
+    cursor: pointer;
+  }
+  .txt {
+    text-align: center;
+    font-weight: 600;
+  }
+  .label {
+    font-size: 20px;
+    padding-left: 7px;
+    font-family: Inter;
+    font-weight: 600;
+    margin-top: 15px;
+  }
+  .btn {
+    margin: 15px 5px 5px;
+    border: 1px solid black;
+    border-radius: 10px;
+    background-color: #313131;
+    color: white;
+    height: 50px;
+    font-size: 21px;
+    cursor: pointer;
+  }
+  .btn:hover {
+    opacity: .9;
+  }
+  .img {
+    border-radius: 50%;
+    width: 130px;
+    height: 130px;
+    cursor:pointer;
+  }
+  .img::hover::after {
+    content: "hhey";
+  }
+  
+  .center {
+    display: grid;
+    place-items: center;
+  }
+  .Roles{
+    display: flex;
+    margin: 30px 0px;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
 }
-
-.blackboard {
-  position: relative;
-  width: 640px;
-  margin: 7% auto;
-  border: tan solid 12px;
-  border-top: #bda27e solid 12px;
-  border-left: #b19876 solid 12px;
-  border-bottom: #c9ad86 solid 12px;
-  box-shadow: 0px 0px 6px 5px rgba(58, 18, 13, 0), 0px 0px 0px 2px #c2a782, 0px 0px 0px 4px #a58e6f, 3px 4px 8px 5px rgba(0, 0, 0, 0.5);
-  background-image: radial-gradient( circle at left 30%, rgba(34, 34, 34, 0.3), rgba(34, 34, 34, 0.3) 80px, rgba(34, 34, 34, 0.5) 100px, rgba(51, 51, 51, 0.5) 160px, rgba(51, 51, 51, 0.5)), linear-gradient( 215deg, transparent, transparent 100px, #222 260px, #222 320px, transparent), radial-gradient( circle at right, #111, rgba(51, 51, 51, 1));
-  background-color: #333;
-}
-
-.blackboard:before {
-  box-sizing: border-box;
-  display: block;
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  background-image: linear-gradient( 175deg, transparent, transparent 40px, rgba(120, 120, 120, 0.1) 100px, rgba(120, 120, 120, 0.1) 110px, transparent 220px, transparent), linear-gradient( 200deg, transparent 80%, rgba(50, 50, 50, 0.3)), radial-gradient( ellipse at right bottom, transparent, transparent 200px, rgba(80, 80, 80, 0.1) 260px, rgba(80, 80, 80, 0.1) 320px, transparent 400px, transparent);
-  border: #2c2c2c solid 2px;
-  content: "Add Meal";
-  font-family: 'Permanent Marker', cursive;
-  font-size: 2.2em;
-  color: rgba(238, 238, 238, 0.7);
+.Role label{
+  opacity: 1;
+  border: 2px solid #313131;
+  border-radius: 26px;
   text-align: center;
-  padding-top: 20px;
-}
-
-.form {
-  padding: 70px 20px 20px;
-}
-
-p {
-  position: relative;
-  margin-bottom: 1em;
-}
-
-label {
-  vertical-align: middle;
-  font-family: 'Permanent Marker', cursive;
-  font-size: 1.6em;
-  color: rgba(238, 238, 238, 0.7);
-}
-
-p:nth-of-type(5) > label {
-  vertical-align: top;
-}
-
-input,
-textarea {
-  vertical-align: middle;
-  padding-left: 10px;
-  background: none;
-  border: none;
-  font-family: 'Permanent Marker', cursive;
-  font-size: 1.6em;
-  color: rgba(238, 238, 238, 0.8);
-  line-height: .6em;
-  outline: none;
-}
-
-textarea {
-  height: 120px;
-  font-size: 1.4em;
-  line-height: 1em;
-  resize: none;
-}
-
-input[type="submit"] {
+  width: 100px;
+  padding: 10px 20px;
+  margin: 20px 10px; 
   cursor: pointer;
-  color: rgba(238, 238, 238, 0.7);
-  line-height: 1em;
-  padding: 0;
 }
-
-input[type="submit"]:focus {
-  background: rgba(238, 238, 238, 0.2);
-  color: rgba(238, 238, 238, 0.2);
+.mystyle {
+  background-color: #313131;
+  color: whitesmoke;
 }
-
-::-moz-selection {
-  background: rgba(238, 238, 238, 0.2);
-  color: rgba(238, 238, 238, 0.2);
-  text-shadow: none;
-}
-
-::selection {
-  background: rgba(238, 238, 238, 0.4);
-  color: rgba(238, 238, 238, 0.3);
-  text-shadow: none;
+.err {
+  color: red;
+  padding-left: 10px;
 }
 `

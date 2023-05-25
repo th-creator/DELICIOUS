@@ -16,18 +16,26 @@ import HandleReservation from '../components/HandleReservations'
 import AddMeal from '../components/AddMeal'
 import Menu from './Menu'
 import ShoppingCart from './shoppingCart'
+import MyOrders from './MyOrders'
+import Meals from './Meals'
+import UserList from './UserList'
+import Profile from './auth/Profile'
+import Orders from '../components/HandleOrders'
+import { useSelector } from 'react-redux'
 
 function Pages({toggle, switcher}) {
   const home = switcher ?  <Restaurant /> : <Home toggle={toggle} />
-  
+  const auth = useSelector(state => state.userReducer)
   const location = useLocation()
   return (
     // <AnimatePresence exitBeforeEnter>
       <Routes location={location} key={location.pathname}>
         <Route path='/' element={home} />
         <Route path='/home' element={home} />
-        <Route path='/Login' element={<Login/>} />
-        <Route path='/Register' element={<Register/>} />
+        {!auth && <>
+          <Route path='/Login' element={<Login/>} />
+          <Route path='/Register' element={<Register/>} />
+          </>}
         {!switcher ?
           <>
             <Route path='/Favorite' element={<Favorite toggle={toggle} />} />
@@ -38,12 +46,18 @@ function Pages({toggle, switcher}) {
           :
           switcher ?
           <>
+            <Route path="/Profile" element={<Profile/>} />  
             <Route path="/ReservationForm" element={<ReservationForm/>} />  
             <Route path="/Reservation" element={<Reservation/>} />  
-            <Route path="/HandleReservation" element={<HandleReservation/>} />  
+            {auth && <>{(auth.roles.find(role => (role.name == "admin" || role.name ==  "manager")) ) 
+            && <Route path="/HandleReservation" element={<HandleReservation/>} />}  </>}
             <Route path="/AddMeal" element={<AddMeal/>} />  
             <Route path="/Menu" element={<Menu/>} />  
             <Route path='/Cart' element={<ShoppingCart/>} />
+            <Route path='/MyOrders' element={<MyOrders/>} />
+            <Route path='/Orders' element={<Orders/>} />
+            <Route path='/Meals' element={<Meals/>} />
+            <Route path='/UserList' element={<UserList/>} />
           </>
           : <></>
         }   

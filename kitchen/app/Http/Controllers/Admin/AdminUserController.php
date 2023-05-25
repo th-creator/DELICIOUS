@@ -11,16 +11,16 @@ class AdminUserController extends Controller
 {
     public function index()
     {
-        return response()->json(User::with('roles')->get());
+        return response()->json(["Users"=>User::with('roles')->get()],200);
     }
 
     public function store(Request $request)
     {
         $data = $request->validate([
-            'fname' => 'required|string',
-            'lname' => 'required|string',
+            'firstName' => 'required|string',
+            'lastName' => 'required|string',
             'email' => 'required|string|email|unique:users',
-            'password' => 'required|string|min:8',
+            'password' => 'required|confirmed|min:6'
             // 'roles' => 'nullable|array',
         ]);
 
@@ -52,7 +52,7 @@ class AdminUserController extends Controller
         
         User::where("id",auth()->id())->update($data);
       } 
-        else  $data['path'] = "addUser.png";
+        else  $data['path'] = "default_profile.png";
 
         $user = User::create($data);
         $user->roles()->attach($request->roles);
@@ -78,17 +78,17 @@ class AdminUserController extends Controller
     public function update(Request $request, User $user)
     {
         $data = $request->validate([
-            'fname' => 'required|string|max:255',
-            'lname' => 'required|string|max:255',
+            'firstName' => 'required|string',
+            'lastName' => 'nullable|string',
             'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
-            'password' => 'nullable|string|min:8|confirmed',
+            'password' => 'nullable|string|min:7|confirmed',
             'roles' => 'nullable|array',
         ]);
 
         if ($request->filled('password')) {
             $data['password'] = bcrypt($data['password']);
         }
-
+        $data['path'] = "default_profile.png";
         $user->update($data);
         $user->roles()->sync($request->roles);
 

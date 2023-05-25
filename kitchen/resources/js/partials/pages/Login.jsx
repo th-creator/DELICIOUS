@@ -26,7 +26,7 @@ export default function Login() {
   
 	
 	const loginHandler = async () => {
-		axios.post(`http://127.0.0.1:8000/api/authenticate`, auth)
+		axios.post(`/api/authenticate`, auth)
     .then((res) => {
       console.log(res);
       if (res.status === 200) {
@@ -34,7 +34,7 @@ export default function Login() {
         setLoginError([])
         localStorage.setItem("access_token",res.data.token)
         localStorage.setItem("role",res.data.user.roles[0].name)
-				dispatch(login({name:res.data.user.name,email:res.data.user.email,role:res.data.user.role,id:res.data.user.id}))
+				dispatch(login({firstName:res.data.user.firstName,lastName:res.data.user.lastName,email:res.data.user.email,path:res.data.user.path,roles:res.data.user.roles,id:res.data.user.id}))
         navigate(`/Home`);
       }
     }).catch(function (error) {
@@ -96,13 +96,13 @@ export default function Login() {
       <div className="box-form">
     <div className="left">
       <div className="overlay">
-      <h1>Hello World.</h1>
+      <h1>Welcome To Delicious.</h1>
       <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.
       Curabitur et est sed felis aliquet sollicitudin</p>
       <span>
         <p>login with social media</p>
-        <a href="#"><i className="fa fa-facebook" aria-hidden="true"></i></a>
-        <a href="#"><i className="fa fa-twitter" aria-hidden="true"></i> Login with Twitter</a>
+        {/* <a href="#"><i className="fa fa-facebook" aria-hidden="true"></i></a> */}
+        <a href="api/login/google"><img className="social-logo" src="images/google-logo.png" alt=""/> Sign with Google</a>
       </span>
       </div>
     </div>
@@ -178,10 +178,8 @@ export default function Login() {
 const Form = styled.div`
 position: relative;
 padding: 30px;
-.darken {
-  background-color: rgba(0,0,0,0.5);
-}
 .forgot-model {
+  box-shadow: 0 0 0 9999px #000000b0;
   position: absolute;
   left: 0;
   right: 0;
@@ -194,7 +192,7 @@ padding: 30px;
   border-radius: 10px;
   background-color: white;
   padding: 30px;
-} 
+}
 .forgot-wrapper div {
   display: flex;
   justify-content: space-around;
@@ -266,7 +264,7 @@ body {
   justify-content: space-between;
   box-shadow: 0 0 20px 6px #090b6f85;
 }
-Onmedia (max-width: 980px) {
+@media (max-width: 980px) {
   .box-form {
     flex-flow: wrap;
     text-align: center;
@@ -303,23 +301,30 @@ Onmedia (max-width: 980px) {
   font-weight: 900;
 }
 .box-form .left .overlay span a {
-  background: #3b5998;
-  color: #FFFFFF;
+  background: #fff;
+  color: #000;
   margin-top: 10px;
-  padding: 14px 50px;
+  padding: 14px 40px 14px 60px;
   border-radius: 100px;
   display: inline-block;
   box-shadow: 0 3px 6px 1px #042d4657;
+  position: relative;
+  text-decoration: none;
+  font-weight: 600;
 }
-.box-form .left .overlay span a:last-child {
-  background: #1dcaff;
-  margin-left: 30px;
+.box-form .left .overlay span a img{
+  width: 24px;
+  margin-right: 10px;
+  position: absolute;
+  top: 12px;
+  left: 25px;
 }
 .box-form .right {
   padding: 40px;
   overflow: hidden;
+  width: 80%;
 }
-Onmedia (max-width: 980px) {
+@media (max-width: 980px) {
   .box-form .right {
     width: 100%;
   }

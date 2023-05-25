@@ -1,12 +1,15 @@
 <?php
 
 use App\Http\Controllers\DeliveryController;
+use App\Http\Controllers\Admin\AdminUserController;
+use App\Http\Controllers\LoginController;
 use App\Http\Controllers\MealController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RecipesController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\Admin\RoleController;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,10 +22,14 @@ use App\Http\Controllers\UserController;
 |
 */
 
-Route::post('forgot',[UserController::class,'forgot']);
-Route::post('reset',[UserController::class,'reset']);
+Route::get('login/{provider}', [LoginController::class, 'redirectToProvider'])->middleware('guest');
+Route::get('login/{provider}/callback', [LoginController::class, 'handleProviderCallback'])->middleware('guest');
+
+Route::post('forgot',[UserController::class,'forgot'])->middleware('guest');
+Route::post('reset',[UserController::class,'reset'])->middleware('guest');
 
 // Route::resource( name: 'recipes', controller: RecipesController::class);
+
 
 Route::get('/recipes',[RecipesController::class,'index']);
 
@@ -50,7 +57,23 @@ Route::middleware('auth:sanctum')->get('/user', [UserController::class, "getUser
  
 Route::apiResource("/Reservation", ReservationController::class);
 Route::get("/getReservations/{id}", [ReservationController::class,"getReservations"]);
-Route::put("/setStateReservation/{id}", [ReservationController::class,"setStateReservation"]);
-
 Route::apiResource("/Meals", MealController::class);
-Route::apiResource("/Deliveries", DeliveryController::class);
+Route::get("/Meals", [MealController::class,"index"]);
+
+Route::post("/DetachOrder/{id}", [DeliveryController::class,"DetachOrder"]);
+Route::get("/getOrders", [DeliveryController::class,"getOrders"]);
+
+Route::group(['middleware'=>"delivery"], function () {
+  Route::apiResource("/Orders", DeliveryController::class);
+  Route::apiResource("/Deliveries", DeliveryController::class);
+});
+
+Route::group(['middleware'=>"delivery"], function () {
+  Route::put("/setStateReservation/{id}", [ReservationController::class,"setStateReservation"]);
+});
+
+Route::group(['middleware'=>"admin"], function () {
+  Route::put('/users/active/{id}', [AdminUserController::class,'updateActive']);
+  Route::apiResource('roles', RoleController::class);
+  Route::apiResource('users', AdminUserController::class);
+});

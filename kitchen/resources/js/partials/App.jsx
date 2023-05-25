@@ -13,6 +13,7 @@ import axios from 'axios';
 import {useSelector, useDispatch} from "react-redux"
 import { logout, isAuth, login } from './actions'
 import AdminLayout from './components/AdminLayout';
+import Footer from './components/Footer';
 
 function App() {
   const [favs, setFavs] = useState([])
@@ -32,7 +33,7 @@ function App() {
       })
         .then((res) => {
           console.log(res);
-          dispatch(login({name:res.data[0].name,email:res.data[0].email,role:res.data[0].roles,id:res.data[0].id}))
+          dispatch(login({firstName:res.data[0].firstName,lastName:res.data[0].lastName,email:res.data[0].email,path:res.data[0].path,roles:res.data[0].roles,id:res.data[0].id}))
         })
         .catch((err) => {
           console.log(err)
@@ -119,24 +120,27 @@ function App() {
     setSwitcher(!switcher)
     navigate(`/Home`); 
   } 
+  const redirect = (to) => {
+    navigate(`${to}`); 
+  }
 
   return (
     <div className="App">
         <NavLog>
-        <ul className="layout_nav">
+        <div className="layout_nav">
                 {auth ? <>
-                  <li className="">
-                    <Link to="/" className="items"
+                <ul className='items-wrapper'>
+                  <li className="items-ends">
+                    <Link to="/Profile" className="items"
                         ><i className="fa-solid fa-gear"></i> Manage account</Link>
-                </li>
-                <li>
-                  <button onClick={signout} className='logout'><i className="fa-solid fa-door-closed"></i>Logout</button>
-                    {/* <form className="inline">
-                        <button className="logout" type="submit">
-                            <i className="fa-solid fa-door-closed"></i>Logout
-                            </button>
-                          </form>     */}
-                </li></>
+                  </li>
+                </ul>
+                <ul className='items-wrapper'>
+                  <li className='items-ends'>
+                    <button onClick={signout} className='logout'><i className="fa-solid fa-door-closed"></i>Logout</button>
+                  </li>  
+                </ul>
+                </>
                 : <>
                 <li>
                     <Link to="/register" className="items"
@@ -148,12 +152,15 @@ function App() {
                         Login</Link>
                 </li>
                 </>}
-            </ul>
+            </div>
         </NavLog>
           <Nav>
             <div className='logo-container'>
               <GiKnifeFork />
               <Logo className='headerH' to={"/"}>Delicious</Logo>
+            </div>
+            <div onClick={() => redirect("/")} className='logo-wrapper'>
+              <GiKnifeFork />
             </div>
             <Main onClick={switchPage}>
               {switcher ? <BiFoodMenu /> : <GiShop />} 
@@ -163,23 +170,38 @@ function App() {
               {switcher ? <Logo className='headerH' to={"/Reservation"}> Reservation</Logo> : 
               <Logo className='headerH' to={"/Favorite"}> Favourites</Logo>}
             </div>
+            <div onClick={() => redirect(switcher ? "/Reservation" : "/Favorite")} className='logo-wrapper'>
+              <FaHeart />
+            </div>
           </Nav>
           {!switcher ? <>
             <Search />
             <Category />
           </>
-          : 
-          <SecNav >
-            <ul>
-              <li><Link to='/Menu'>Menu</Link></li>  
-              <li><Link to="/">Order Online</Link></li>
-              <li><Link to="/Cart">Cart</Link></li>  
+          :
+          <NavLog>
+            <ul className='items-wrapper border-bottom'>
+              {auth && <><li><Link  className="items bordered" to='/Menu'>Menu</Link></li>  
+              <li><Link  className="items bordered" to="/MyOrders">My Order</Link></li>
+              <li><Link  className="items bordered" to="/Cart">Cart</Link></li></>} 
+              {auth && <>{(auth.roles.find(role => (role.name == "admin" || role.name ==  "delivery")) ) && <>
+              <li><Link className="items bordered" to="/Meals">Meals</Link></li>
+              <li><Link className="items bordered" to="/Orders">Oredrs</Link></li>
+              </> }</>}
+              {auth && <>{(auth.roles.find(role => (role.name == "admin" || role.name ==  "manager")) ) && <>
+              <li><Link className="items bordered" to='/HandleReservation'>Reservations</Link></li>
+               </> }</>}
+              {auth && <>{(auth.roles.find(role => (role.name == "admin" || role.name ==  "super admin"))) && <>
+              <li><Link className="items bordered" to="/UserList">users</Link></li>
+               </> }</>}
             </ul>
-          </SecNav>}
-          {localStorage.getItem("role") && <>{localStorage.getItem("role") == "admin" && <AdminLayout/>}</>}
+          </NavLog>
+          }
+          {/* {localStorage.getItem("role") && <>{localStorage.getItem("role") == "admin" && <AdminLayout/>}</>} */}
           <favContext.Provider value={providerValue}>
             <Pages switcher={switcher} toggle={onToggle}/>
           </favContext.Provider>
+          <Footer />
     </div>
   );
 }
@@ -205,7 +227,21 @@ const Nav = styled.div`
   }
   .logo-container {
     width: 205px ;
+    display: inline;
   }
+  .logo-wrapper {
+    display: none;
+    cursor: pointer;
+  }
+  @media (max-width: 1080px) {
+    .logo-container {
+      display: none;
+    }
+    .logo-wrapper {
+      display: inline;
+    }
+  }
+  
 `
 const SecNav = styled.div`
   display: flex;
@@ -253,14 +289,34 @@ const NavLog = styled.nav`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  /* margin-right: 6%; */
-  list-style: none;
+  margin-top: 10px;
   }
+.items-wrapper {
+  display: flex;
+  list-style: none;
+  justify-content: center;
+}
+.border-bottom {
+  padding-bottom: 25px;
+  border-bottom: .1rem solid rgba(0,0,0,.1);
+}
 .items {
   color: black;
   text-decoration: none;
   font-size: 1.2rem;
   cursor: pointer;
+  margin-inline: 5px;
+}
+.items-ends {
+  width: 177px;
+  text-align: end;
+}
+.bordered {
+  border-left: 1px solid black;
+    padding-left: 5px;
+}
+.items:hover {
+  opacity: .8;
 }
 .welcome {
   font-size: 1.5rem;

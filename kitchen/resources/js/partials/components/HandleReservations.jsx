@@ -43,7 +43,7 @@ export default function HandleReservation() {
   return (
     <Wrapper >
       <div className="container">
-        <h2>weekly Reservations</h2>
+        <h2>Weekly Reservations</h2>
         <ul className="responsive-table">
           <li className="table-header">
             <div className="col col-1">Name</div>
@@ -65,9 +65,9 @@ export default function HandleReservation() {
               <div className="col col-2" data-label="people">{reservation.num_person}</div>
               <div className="col col-3" data-label="day">{reservation.day}</div>
               <div className="col col-4" data-label="hour">{reservation.hour}</div>
-              <div className="col col-5" data-label="state" onClick={() =>setActive(reservation.id,reservation.state)}>{reservation.state == 0 ? <span><AiFillClockCircle className='btn'/> pending</span> 
-              : reservation.state == 1  ? <span><AiFillCheckCircle className='btn'/> yes</span> 
-              : <span><AiFillCloseCircle className='btn'/> no</span>}</div>
+              <div className="col col-5" data-label="state" onClick={() =>setActive(reservation.id,reservation.state)}>{reservation.state == 0 ? <span className='clicked'><AiFillClockCircle className='btn'/> pending</span> 
+              : reservation.state == 1  ? <span className='clicked'><AiFillCheckCircle className='btn'/> yes</span> 
+              : <span className='clicked'><AiFillCloseCircle className='btn'/> no</span>}</div>
               <div className="col col-6" data-label="action" ><BsFillTrashFill className='btn' onClick={() => deleteReservation(reservation.id)}/></div>
             </li>
           )) }
@@ -147,7 +147,9 @@ h2 {
   .center {
     text-align: center;
   }
-
+  .clicked {
+    cursor: pointer;
+  }
   @media all and (max-width: 767px) {
     .table-header {
       display: none;
