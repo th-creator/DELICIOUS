@@ -60,9 +60,9 @@ class DeliveryController extends Controller
         return response()->json(['message' => 'Delivery updated successfully', 'delivery' => $delivery], 200);
     }
 
-    public function destroy(Delivery $delivery)
+    public function destroy($id)
     {
-        $delivery->delete();
+        Delivery::destroy($id);
         return response()->json(['message' => 'Delivery deleted successfully'], 200);
     }
     public function DetachOrder(Request $request,$id)

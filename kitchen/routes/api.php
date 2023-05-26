@@ -62,6 +62,7 @@ Route::get("/Meals", [MealController::class,"index"]);
 
 Route::post("/DetachOrder/{id}", [DeliveryController::class,"DetachOrder"]);
 Route::get("/getOrders", [DeliveryController::class,"getOrders"]);
+Route::post("/setDeliveries", [DeliveryController::class,'store']);
 
 Route::group(['middleware'=>"delivery"], function () {
   Route::apiResource("/Orders", DeliveryController::class);

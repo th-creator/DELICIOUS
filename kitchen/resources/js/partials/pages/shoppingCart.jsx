@@ -26,7 +26,7 @@ export default function ShoppingCart() {
       quantity: array,
     }
     console.log(demands);
-      await axios.post(`/api/Deliveries`,demands,{
+      await axios.post(`/api/setDeliveries`,demands,{
         headers: {
           Authorization : `Bearer ${localStorage.getItem("access_token")}`
           }

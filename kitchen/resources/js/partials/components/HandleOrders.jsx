@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import styled from 'styled-components'
-import {BsFillTrashFill} from "react-icons/bs"
-import {AiFillCheckCircle, AiFillClockCircle, AiFillCloseCircle} from "react-icons/ai"
+import {AiOutlineClose} from "react-icons/ai"
+import {BsTrash} from "react-icons/bs"
 import { Link } from 'react-router-dom'
 
 export default function Orders() {
@@ -38,6 +38,16 @@ export default function Orders() {
     }).then(res => console.log(res))
     getOrders()
   }
+  const out = async (id) => {
+    axios.delete(`/api/Deliveries/${id}`,{
+      headers: {
+        Authorization : `Bearer ${localStorage.getItem("access_token")}`
+        }
+    }) .then(res => {
+      console.log(res)
+      getOrders()
+    }).catch(err => console.log(err))
+  }
 
   useEffect(() => {
     auth && getOrders()
@@ -46,7 +56,7 @@ export default function Orders() {
   return (
     <Wrapper >
       <div className="container">
-        <h2>All Orders</h2>
+        <h2 >All Orders</h2>
         {/* <ul className="responsive-table">
           <li className="table-header">
             <div className="col col-1">Order Number</div>
@@ -79,14 +89,24 @@ export default function Orders() {
         <Grid className="delivery.id">
           <>{orders.map(delivery => (
           <div className='grid-item' key={delivery.id}>
-            <h1>{delivery.users.firstName + " "}{delivery.users.lastName && delivery.users.lastName}</h1>
-            <ul className='li-items'>
-              <li className='li-items'><span>Order Number : </span>{delivery.id} </li>
-              <li className='li-items'><span>Number Of Meals : </span>{delivery.meals.length}</li>
-              <li className='li-items'><span>Location : </span>{delivery.place}</li>
-              <li className='li-items'><span>Total : </span>{delivery.total}</li>
-            </ul>
-            <Link to={`/Orders/${delivery.id}`}>More Details</Link>
+            <span className='out' onClick={() => out(delivery.id)}><BsTrash /></span>
+            <div className='center'>
+              <img className="grid-item-img" src={`/storage/profile/${delivery.users.path}`} alt="" />
+            </div>
+            <div className="title">
+              <h1>{delivery.users.firstName + " "}{delivery.users.lastName && delivery.users.lastName}</h1>
+            </div>
+            <div className="body">
+              <ul className='li-items'>
+                <li className='li-items'><span>Order Number : </span>{delivery.id} </li>
+                <li className='li-items'><span>Number Of Meals : </span>{delivery.meals.length}</li>
+                <li className='li-items'><span>Location : </span>{delivery.place}</li>
+                <li className='li-items'><span>Total : </span>{delivery.total}</li>
+              </ul>
+              <div className="center">
+                <Link className='btn' to={`/Orders/${delivery.id}`}>More Details</Link>  
+              </div>
+            </div>
           </div>))
           }</>
         </Grid>
@@ -110,100 +130,98 @@ body {
 }
 
 h2 {
-  font-size: 26px;
+  font-size: 2.5rem;
   margin: 20px 0;
   text-align: center;
   small {
     font-size: 0.5em;
   }
 }
-
-.responsive-table {
-  li {
-    border-radius: 3px;
-    padding: 25px 30px;
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 25px;
-  }
-  .table-header {
-    background-color: #95A5A6;
-    font-size: 14px;
-    text-transform: uppercase;
-    letter-spacing: 0.03em;
-  }
-  .table-row {
-    background-color: #ffffff;
-    box-shadow: 0px 0px 9px 0px rgba(0,0,0,0.1);
-  }
-  .col-1 {
-    flex-basis: 20%;
-  }
-  .col-2 {
-    flex-basis: 18%;
-  }
-  .col-3 {
-    flex-basis: 18%;
-  }
-  .col-4 {
-    flex-basis: 18%;
-  }
-  .col-5 {
-    flex-basis: 18%;
-  }
-  .col-6 {
-    flex-basis: 8%;
-  }
-  
-  .btn {
-    cursor: pointer;
-  }
-
-  .center {
-    text-align: center;
-    display: flex;
-    justify-content: center;
-    // margin-left: 30%;
-  }
-
-  @media all and (max-width: 767px) {
-    .table-header {
-      display: none;
-    }
-    .table-row{
-      
-    }
-    li {
-      display: block;
-    }
-    .col {
-      
-      flex-basis: 100%;
-      
-    }
-    .col {
-      display: flex;
-      padding: 10px 0;
-      &:before {
-        color: #6C7A89;
-        padding-right: 10px;
-        content: attr(data-label);
-        flex-basis: 50%;
-        text-align: right;
-      }
-    }
-  }
-}
+    
 `
 const Grid = styled.div`
   display:grid;
   grid-template-columns: repeat(3, minmax(5rem, 26rem));
-  grid-gap: 2rem;
+  grid-gap: 5rem 2rem;
   justify-content: center;
+  margin-top: 4rem;
   .grid-item {
-    border: var(--border);
-    box-shadow: var(--box-shadow);
-    padding: 1rem 2rem;
+    // border: var(--border);
+    // box-shadow: var(--box-shadow);
+    // padding-block: 1rem;
+    border-radius: 30px;
+  background: whitesmoke;
+  // background: #e0e0e0;
+  box-shadow: 15px 15px 30px #bebebe,
+             -15px -15px 30px #ffffff;
+    &:hover {
+      transform: translateY(-10px);
+      transition: all .5s ease-in-out;
+    }
+    position: relative;
+  }
+  .out {
+    position: absolute;
+    right: 23px;
+    font-size: x-large;
+    cursor: pointer;
+    top: 20px;
+  }
+  .grid-item-img {
+    --size: 100px;
+    width: var(--size);
+    height: var(--size);
+    border-radius: 50%;
+    transform: translateY(-50%);
+    background: #42caff;
+    background: linear-gradient(to bottom, #42caff 0%, #e81aff 100%);
+    position: relative;
+    transition: all .3s ease-in-out;
+    margin-bottom: -50px;
+   }
+   
+   .grid-item-img::before {
+    content: "";
+    border-radius: inherit;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 90%;
+    height: 90%;
+    transform: translate(-50%, -50%);
+    border: 1rem solid #e8e8e8;
+   }
+   
+   /*Text*/
+   .text-title {
+    text-transform: uppercase;
+    font-size: 0.75em;
+    color: #42caff;
+    letter-spacing: 0.05rem;
+   }
+   
+   .text-body {
+    font-size: .8em;
+    text-align: center;
+    color: #6f6d78;
+    font-weight: 400;
+    font-style: italic;
+   }
+   
+   /*Hover*/
+   .grid-item:hover .grid-item-img {
+    --size: 110px;
+    width: var(--size);
+    height: var(--size);
+   }
+  .title {
+    border-bottom: var(--border);
+  }
+  .title h1 {
+    text-align: center;
+  }
+  .body {
+    padding-inline: 2rem;
   }
   .grid-item:hover {
     border: var(--border-hover);
@@ -215,4 +233,27 @@ const Grid = styled.div`
     font-size: 17px;
     font-weight: 900;
   }
+  .center {
+    display: flex; 
+    justify-content: center;
+  }
+  .btn  {
+    font-size: 1rem;
+    margin-bottom: 5px;
+    padding: 20px;
+    border-radius: 10px;
+    color: black;
+    text-decoration: none;
+    padding: 1rem 2rem;
+    background: transparent;
+    border: 2px solid black;
+    font-weight: 600;
+    cursor: pointer;
+    
+    &:hover {
+      color: black;
+      opacity: .5;
+    }
+  }
+  
 `
