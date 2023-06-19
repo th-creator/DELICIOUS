@@ -145,6 +145,8 @@ const Card = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
+    font-weight: 900;
+    font-size: 20px;
     }
   .price {
     bottom: -3%;

@@ -5,6 +5,7 @@ import {AiOutlineClose} from "react-icons/ai"
 import {BsTrash} from "react-icons/bs"
 import { Link } from 'react-router-dom'
 
+
 export default function Orders() {
   const [orders, setOrders] = useState([])
   const auth = useSelector(state => state.userReducer)
@@ -92,7 +93,7 @@ export default function Orders() {
             <span className='out' onClick={() => out(delivery.id)}><BsTrash /></span>
             <div className='center'>
               <img className="grid-item-img" src={`/storage/profile/${delivery.users.path}`} alt="" />
-            </div>
+            </div>                        
             <div className="title">
               <h1>{delivery.users.firstName + " "}{delivery.users.lastName && delivery.users.lastName}</h1>
             </div>
@@ -142,7 +143,7 @@ h2 {
 const Grid = styled.div`
   display:grid;
   grid-template-columns: repeat(3, minmax(5rem, 26rem));
-  grid-gap: 5rem 2rem;
+  grid-gap: 6rem 4rem;
   justify-content: center;
   margin-top: 4rem;
   .grid-item {

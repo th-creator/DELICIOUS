@@ -43,7 +43,13 @@ class UserController extends Controller
         if(!auth()->attempt($credentials)) {
             return response()->json("invalid credentials",401);
         }
+        
         $user = User::where('email',$request->email)->with('roles')->first();
+
+        if ($user->active == false ) {
+            return response()->json("Your Account Is Blocked",401);
+        }
+
         Session::put('roles', $user);
         return response()->json(["user" => $user, "token" => $user->createToken("Api Token of ".$user->firstName)->plainTextToken,"message" =>"user in"],200);
         
@@ -122,41 +128,38 @@ class UserController extends Controller
 
         return response()->json($loginResponse,200);
     }
-    //changing user name
-    public function nameHandler(Request $request) {
+    //changing user name and email
+    public function infoHandler(Request $request) {
         $name = $request->validate([
             "firstName" => "required",
             "lastName" => "required",
+            "email" => "required|email"
         ]);
 
         User::where("id",auth()->id())->Update($name);
         return response()->json('name changed successfuly');
     }
-    //changing user email
-    public function emailHandler(Request $request) {
-        $email = $request->validate([
-            "email" => "required|email"
-        ]);
-
-        User::where("id",auth()->id())->Update($email);
-        return response()->json('email changed successfuly');
-    }
     //changing user password
     public function passwordHandler(Request $request) {
         $user = auth()->user();
         
-        $validated = $request->validate([
-            'current_password' => [
-                'required',
+        // $validated = $request->validate([
+        //     'current_password' => [
+        //         'required',
                 
-                function ($attribute, $value, $fail) use ($user) {
-                    if (!Hash::check($value, $user->password)) {
-                        $fail('wrong password');
-                    }
-                }
-            ],
+        //         function ($attribute, $value, $fail) use ($user) {
+        //             if (!Hash::check($value, $user->password)) {
+        //                 $fail('wrong password');
+        //             }
+        //         }
+        //     ],
+        //     'password' => [
+        //         'required', 'min:6', 'confirmed', 'different:current_password'
+        //     ]
+        // ]);
+        $validated = $request->validate([
             'password' => [
-                'required', 'min:6', 'confirmed', 'different:current_password'
+                'required', 'min:6', 'confirmed'
             ]
         ]);
         
@@ -179,7 +182,8 @@ class UserController extends Controller
             'jpg',
             'jpeg',
             'png', 
-            'jfif'
+            'jfif',
+            "webp"
         );
         if (!in_array($extension,$supported_image)) {
             return response()->json("unsupported image type",422);

@@ -29,7 +29,7 @@ class DeliveryController extends Controller
             'quantity' => 'nullable|array',
         ]);
         $data['user_id'] = auth('sanctum')->id();
-        $data['state'] = -1;
+        $data['state'] = 'Hanging';
         
         $delivery = Delivery::create($data);
         foreach ($data['meals'] as $key => $value) {
@@ -40,9 +40,10 @@ class DeliveryController extends Controller
         return response()->json(['message' => 'delivery created successfully', 'delivery' => $delivery], 201);
     }
 
-    public function show(Delivery $delivery)
+    public function show($id)
     {
-        return $delivery->load('meals');
+        $deliveries = Delivery::where("id",$id)->with('meals')->with('users')->get();
+        return response()->json(["deliveries"=>$deliveries],200);
     }
 
     public function update(Request $request, Delivery $delivery)
@@ -67,9 +68,18 @@ class DeliveryController extends Controller
     }
     public function DetachOrder(Request $request,$id)
     {
-        $report = Delivery::where("id",$request->delivery_id)->get()->first();
+        $report = Delivery::where("id",$request->delivery_id)->get();
         $report->meals()->detach($id);
 
         return response()->json(['message' => 'order deleted successfully']);
+    }
+    public function setStateDelivery(Request $request,$id) {
+        $Delivery = $request->validate([
+            'state' => "required",
+        ]);
+
+        Delivery::findOrFail($id)->update($Delivery);
+
+        return response()->json("Delivery state updated",200);
     }
 }

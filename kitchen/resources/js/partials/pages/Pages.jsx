@@ -22,6 +22,7 @@ import UserList from './UserList'
 import Profile from './auth/Profile'
 import Orders from '../components/HandleOrders'
 import { useSelector } from 'react-redux'
+import OrderDetail from './admin/OrderDetail'
 
 function Pages({toggle, switcher}) {
   const home = switcher ?  <Restaurant /> : <Home toggle={toggle} />
@@ -58,6 +59,7 @@ function Pages({toggle, switcher}) {
             <Route path='/Orders' element={<Orders/>} />
             <Route path='/Meals' element={<Meals/>} />
             <Route path='/UserList' element={<UserList/>} />
+            <Route path='/Orders/:id' element={<OrderDetail />} />
           </>
           : <></>
         }   

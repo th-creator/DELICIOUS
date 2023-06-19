@@ -51,6 +51,10 @@ Route::post('/authenticate',[UserController::class, 'authenticate'])->middleware
 //getting user's info
 Route::middleware('auth:sanctum')->get('/user', [UserController::class, "getUser"]);
 
+Route::middleware("auth:sanctum")->post('/user/infoHandler',[UserController::class, 'infoHandler']);
+Route::middleware("auth:sanctum")->post('/user/passwordHandler',[UserController::class, 'passwordHandler']);
+Route::middleware("auth:sanctum")->post('/user/imageHandler',[UserController::class, 'imageHandler']);
+
 // Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 //     return $request->user();
 // });
@@ -65,6 +69,7 @@ Route::get("/getOrders", [DeliveryController::class,"getOrders"]);
 Route::post("/setDeliveries", [DeliveryController::class,'store']);
 
 Route::group(['middleware'=>"delivery"], function () {
+  Route::put("/setStateDelivery/{id}", [DeliveryController::class,'setStateDelivery']);
   Route::apiResource("/Orders", DeliveryController::class);
   Route::apiResource("/Deliveries", DeliveryController::class);
 });

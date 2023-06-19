@@ -38,10 +38,15 @@ export default function Login() {
         navigate(`/Home`);
       }
     }).catch(function (error) {
-      console.log(error);
+      console.log(error.response.data);
+        setError("")
+        setLoginError("")
       if (error.response.status === 422) {
 				setError(error.response.data.message)
         setLoginError(error.response.data.errors)
+      }
+      if (error.response.status === 401) {
+				setError(error.response.data)
       }
     });
 	}
@@ -115,6 +120,7 @@ export default function Login() {
           <input onChange={handleChange} type="text" placeholder="email" name='email'/>
           <span className="err">
             {loginError.email &&<>{ loginError.email }</>}
+            {error &&<>{ error }</>}
           </span>
           <br/>
           <input onChange={handleChange} type="password" placeholder="password" name='password'/>

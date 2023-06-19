@@ -84,7 +84,7 @@ export default function ShoppingCart() {
             </button>
           </div>
       
-          <div className="total-price">{item.price}</div>
+          <div className="total-price">{item.price} X {item.quantity}</div>
           <div className="buttons ">
             <span onClick={() => deleteItem(item.id)}><HiTrash className='delete-btn'/></span>
           </div>
@@ -106,11 +106,14 @@ export default function ShoppingCart() {
         <div className='form-model'>
           <form onSubmit={postDemand}> 
             <div>
-              <input className='order-input' type="text" name="place" id="" onChange={(e) => setPlace(e.target.value)} placeholder='enter your address'/>
+              <label className='label' htmlFor="">Enter Your Address</label>
+              <input className='order-input' type="text" name="place" id="" onChange={(e) => setPlace(e.target.value)} placeholder=''/>
             </div>
-            {/* <div>
-              <input className='order-input' type="date" name="" id="" placeholder='enter the date'/>
-            </div> */}
+            <br />
+            <div>
+              <label className='label' htmlFor="">Payment Method</label><br /><br />
+              <input className='' type="radio" name="place" id="" onChange={(e) => setPlace(e.target.value)} placeholder='' checked/> Cash On Delivery
+            </div>
             <h6 onClick={toggleValidate}>Return To Cart</h6>
             <button className='model-btn'>Order Now</button>
           </form>
@@ -155,6 +158,10 @@ position: relative;
   line-height: 22px;
   text-align: left;
   cursor: pointer;
+}
+.label {
+  font-size: 18px;
+  font-weight: 700;
 }
 .model-btn {
   color: #fff;
@@ -262,6 +269,7 @@ position: relative;
 .description span:last-child {
   font-weight: 300;
   margin-top: 8px;
+  font-size: 18px;
   color: #86939E;
 }
 .quantity {

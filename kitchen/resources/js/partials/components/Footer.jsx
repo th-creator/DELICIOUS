@@ -12,11 +12,11 @@ export default function Footer() {
       <div className="footer">
         <Diviser/>
         <div className="box-container">
-          <div className="boxing change">
+          {/* <div className="boxing change">
             <img src="../images/my_pic1.jpg" alt=""/>
             <h3>Oussama Itou</h3>
             <p>WEB FULL-STACK DEVELOPER</p>
-          </div>
+          </div> */}
           <div className="box change">
             <h3>Cantact Me</h3>
             <a target={"_blank"} href="https://api.whatsapp.com/send?phone=212629011540">

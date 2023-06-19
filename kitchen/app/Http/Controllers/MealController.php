@@ -27,7 +27,7 @@ class MealController extends Controller
         $image = date('His').'-'.$filename;
 
         $supported_image = array(
-            'gif',
+            'gif', 
             'jpg',
             'jpeg',
             'png', 

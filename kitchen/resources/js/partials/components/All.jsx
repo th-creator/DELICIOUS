@@ -42,7 +42,7 @@ export default function All({toggle}) {
 const Grid = styled.div`
   display:grid;
   grid-template-columns: repeat(3, minmax(5rem, 18rem));
-  grid-grap: 3rem;
+  grid-gap: 3rem;
   justify-content: center;
 `
 const Card = styled.div`

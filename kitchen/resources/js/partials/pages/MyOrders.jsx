@@ -56,7 +56,7 @@ export default function MyOrders() {
               <div className="col col-2" data-label="Name">{order.name}</div>
               <div className="col col-3" data-label="Quatity">{order.pivot.quantity}</div>
               <div className="col col-4" data-label="Price">{order.price}</div>
-              <div className="col col-5" data-label="State">{order == 0 ? "pending" : order == 1  ? "yes" : "no"}</div>
+              <div className="col col-5" data-label="State">{delivery.state}</div>
               <div className="col col-6" data-label="Action" ><BsFillTrashFill className='btn' onClick={() => deleteOrder(order.id,delivery.id)}/></div>
             </li>)
           )}</div>)) }
